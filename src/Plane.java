@@ -23,10 +23,21 @@ public class Plane
         return normal.x + "x + " + normal.y + "y + " + normal.z + "z = " + this.scalar_product;
     }
 
-    public static void main(String[] args)
+    public double distance(Plane plane)
     {
-        Plane p = new Plane(new Vector3D(0, 1, 2), new Vector3D(3, 4, 5), new Vector3D(0, 2, 0));
-        System.out.println(p);
+        Line normal = new Line(this.normal, this.point);
+        Vector3D intersection = plane.intersection(normal);
+        return intersection.distance(this.point);
+    }
+
+    public double distance(Line line)
+    {
+        return this.distance(line.point);
+    }
+
+    public double distance(Vector3D point)
+    {
+        return (this.normal.dot(point) + this.scalar_product) / normal.magnitude();
     }
 
     public Line intersection(Plane plane)
@@ -47,5 +58,12 @@ public class Plane
             return line.position(t);
         }
         return null;
+    }
+
+    public static void main(String[] args)
+    {
+        Plane p1 = new Plane(new Vector3D(7, 4, 2), new Vector3D(1, 1, -9), new Vector3D(1, -2, -2));
+        Plane p2 = new Plane(new Vector3D(7,7,7), new Vector3D(4, 4, -3), new Vector3D(1, -1, -1));
+        System.out.println(p1.intersection(p2));
     }
 }

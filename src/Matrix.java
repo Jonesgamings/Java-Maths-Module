@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Matrix
 {
     int rows;
@@ -63,7 +65,7 @@ public class Matrix
 
     public Matrix multiply(Matrix matrix)
     {
-        if (this.rows != matrix.columns) {return null;}
+        if (this.columns != matrix.rows) {return null;}
         Matrix newMatrix = new Matrix(rows, matrix.columns);
         for (int row = 0; row < newMatrix.rows; row++)
         {
@@ -113,6 +115,19 @@ public class Matrix
         return identityMatrix;
     }
 
+    public Matrix random_values(double min, double max)
+    {
+        Matrix newMatrix = new Matrix(rows, columns);
+        for (int row = 0; row < this.rows; row++) {
+            for (int column = 0; column < this.columns; column++) {
+                Random r = new Random();
+                double random = Math.round(min + (max - min) * r.nextDouble());
+                newMatrix.setAt(row, column, random);
+            }
+        }
+        return newMatrix;
+    }
+
     public double determinate()
     {
         if (columns != rows){ return 0f;}
@@ -145,11 +160,16 @@ public class Matrix
     {
         double determinate = determinate();
         Matrix inverse = new Matrix(rows, columns);
+        if (inverse.columns != inverse.rows) {return null;}
+        if (inverse.columns == 2) {
+            return new Matrix(2, 2).setMatrix(new double[][] {{matrix[1][1], -matrix[0][1]}, {-matrix[1][0], matrix[0][0]}}).divide(this.determinate());
+        }
         for (int row = 0; row < rows; row++)
         {
             for (int column = 0; column < columns; column++)
             {
                 double subDeterminate = Matrix.submatrix(this, row, column).determinate();
+                System.out.println(subDeterminate);
                 inverse.setAt(row, column, 1/determinate * subDeterminate * Math.pow(-1, (row + column)%2));
             }
         }
@@ -193,5 +213,10 @@ public class Matrix
         matrixString.deleteCharAt(length-1);
         matrixString.append("}");
         return  matrixString.toString();
+    }
+    public static void main(String[] args){
+        Matrix m = new Matrix(4, 4).random_values(1, 10);
+        System.out.println(m);
+        System.out.println(m.determinate());
     }
 }

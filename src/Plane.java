@@ -1,5 +1,3 @@
-import java.util.Objects;
-
 public class Plane
 {
     Vector3D vector1;
@@ -16,6 +14,21 @@ public class Plane
         this.normal = vector1.cross(vector2);
         this.scalar_product = this.normal.dot(this.point);
     }
+
+    public Plane(Vector3D normal, Vector3D point)
+    {
+        this.point = point;
+        this.normal = normal;
+        this.scalar_product = this.normal.dot(this.point);
+    }
+
+    public Plane(Vector3D normal, double scalar_product)
+    {
+        this.normal = normal;
+        this.scalar_product = scalar_product;
+        this.point = new Vector3D(0, 0, scalar_product/normal.z);
+    }
+
 
     @Override
     public String toString()
@@ -44,11 +57,28 @@ public class Plane
     {
         if (this.normal.cross(plane.normal).equals(new Vector3D(0, 0, 0))) {return null;}
         Vector3D direction = this.normal.cross(plane.normal);
-        Matrix simul_plane = new Matrix(2, 2).setMatrix(new double[][] {{this.normal.x, this.normal.y}, {plane.normal.x, plane.normal.y}});
         Matrix simul_point = new Matrix(2, 1).setMatrix(new double[][] {{this.scalar_product}, {plane.scalar_product}});
-        Matrix point_Matrix = simul_plane.inverse().multiply(simul_point);
-        Vector3D point = new Vector3D(point_Matrix.getAt(0, 0), point_Matrix.getAt(1, 0), 0);
-        return new Line(direction, point);
+        Matrix simul_plane_xy = new Matrix(2, 2).setMatrix(new double[][] {{this.normal.x, this.normal.y}, {plane.normal.x, plane.normal.y}});
+        Matrix simul_plane_xz = new Matrix(2, 2).setMatrix(new double[][] {{this.normal.x, this.normal.z}, {plane.normal.x, plane.normal.z}});
+        Matrix simul_plane_yz = new Matrix(2, 2).setMatrix(new double[][] {{this.normal.y, this.normal.z}, {plane.normal.y, plane.normal.z}});
+        if (simul_plane_xy.determinate() != 0) {
+            Matrix point_Matrix = simul_plane_xy.inverse().multiply(simul_point);
+            Vector3D point = new Vector3D(point_Matrix.getAt(0, 0), point_Matrix.getAt(1, 0), 0);
+            return new Line(direction, point);
+        }
+        if (simul_plane_xz.determinate() != 0)
+        {
+            Matrix point_Matrix = simul_plane_xz.inverse().multiply(simul_point);
+            Vector3D point = new Vector3D(point_Matrix.getAt(0, 0), 0, point_Matrix.getAt(1, 0));
+            return new Line(direction, point);
+        }
+        if (simul_plane_yz.determinate() != 0)
+        {
+            Matrix point_Matrix = simul_plane_yz.inverse().multiply(simul_point);
+            Vector3D point = new Vector3D(0, point_Matrix.getAt(0, 0), point_Matrix.getAt(1, 0));
+            return new Line(direction, point);
+        }
+        return null;
     }
 
     public Vector3D intersection(Line line)
@@ -62,8 +92,10 @@ public class Plane
 
     public static void main(String[] args)
     {
-        Plane p1 = new Plane(new Vector3D(7, 4, 2), new Vector3D(1, 1, -9), new Vector3D(1, -2, -2));
-        Plane p2 = new Plane(new Vector3D(7,7,7), new Vector3D(4, 4, -3), new Vector3D(1, -1, -1));
+        Plane p1 = new Plane(new Vector3D(7 ,7, 7.7), 13);
+        Plane p2 = new Plane(new Vector3D(7,7,7.7),29);
         System.out.println(p1.intersection(p2));
+        System.out.println(p1);
+        System.out.println(p2);
     }
 }

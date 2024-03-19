@@ -160,6 +160,7 @@ public class Matrix
     {
         double determinate = determinate();
         Matrix inverse = new Matrix(rows, columns);
+        if (determinate == 0) {return null;}
         if (inverse.columns != inverse.rows) {return null;}
         if (inverse.columns == 2) {
             return new Matrix(2, 2).setMatrix(new double[][] {{matrix[1][1], -matrix[0][1]}, {-matrix[1][0], matrix[0][0]}}).divide(this.determinate());

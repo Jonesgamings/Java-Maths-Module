@@ -170,7 +170,6 @@ public class Matrix
             for (int column = 0; column < columns; column++)
             {
                 double subDeterminate = Matrix.submatrix(this, row, column).determinate();
-                System.out.println(subDeterminate);
                 inverse.setAt(row, column, 1/determinate * subDeterminate * Math.pow(-1, (row + column)%2));
             }
         }
@@ -195,6 +194,12 @@ public class Matrix
             }
         }
         return newMatrix;
+    }
+
+    public double eigenvalue()
+    {
+        if (columns != rows) {return 0;}
+        return 0;
     }
 
     @Override

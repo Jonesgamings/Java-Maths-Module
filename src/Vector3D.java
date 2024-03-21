@@ -11,6 +11,14 @@ public class Vector3D
         this.z = z;
     }
 
+    public Vector3D midpoint(Vector3D point)
+    {
+        double newX = (this.x + point.x)/2;
+        double newY = (this.y + point.y)/2;
+        double newZ = (this.z + point.z)/2;
+        return new Vector3D(newX, newY, newZ);
+    }
+
     @Override
     public String toString()
     {

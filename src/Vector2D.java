@@ -9,14 +9,23 @@ public class Vector2D
         this.y = y;
     }
 
+    public Vector2D midpoint(Vector2D point)
+    {
+        double newX = (this.x + point.x)/2;
+        double newY = (this.y + point.y)/2;
+        return new Vector2D(newX, newY);
+    }
+
     public double magnitude()
     {
         return Math.pow(Math.pow(this.x, 2) + Math.pow(this.y, 2), 0.5);
     }
 
+    public double angle() {return Math.atan2(this.y, this.x);}
+
     public double angle(Vector2D vector)
     {
-        return Math.atan2(this.x - vector.x, this.y - vector.y);
+        return Math.atan2(this.y - vector.y, this.x - vector.x);
     }
 
     public Vector2D add(Vector2D vector)

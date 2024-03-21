@@ -196,7 +196,7 @@ public class Matrix
         return newMatrix;
     }
 
-    public double eigenvalue()
+    public double eigenvalues()
     {
         if (columns != rows) {return 0;}
         return 0;

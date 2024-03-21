@@ -92,9 +92,9 @@ public class Plane
 
     public static void main(String[] args)
     {
-        Plane p1 = new Plane(new Vector3D(7 ,7, 7.7), 13);
-        Plane p2 = new Plane(new Vector3D(7,7,7.7),29);
-        System.out.println(p1.distance(p2));
+        Plane p1 = new Plane(new Vector3D(1 ,2, 0), 13);
+        Plane p2 = new Plane(new Vector3D(0,2,-3),-13);
+        System.out.println(p1.intersection(p2));
         System.out.println(p1);
         System.out.println(p2);
     }

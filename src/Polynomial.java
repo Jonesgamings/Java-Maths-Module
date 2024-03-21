@@ -84,7 +84,7 @@ public class Polynomial
         return Polynomial.straightLine(gradient, new Vector2D(x, y));
     }
 
-    public Polynomial indefiniteIntergral(double constant)
+    public Polynomial indefiniteIntegral(double constant)
     {
         double[] newCoefficients = new double[this.degree+2];
         for (int i=0; i < this.degree+1; i++)
@@ -97,9 +97,19 @@ public class Polynomial
         return new Polynomial(newCoefficients);
     }
 
-    public double definiteIntergral(double lower, double upper)
+    public double definiteIntegral(double lower, double upper)
     {
-        Polynomial intergral = this.indefiniteIntergral(0);
-        return  intergral.atX(upper) - intergral.atX(lower);
+        Polynomial integral = this.indefiniteIntegral(0);
+        return  integral.atX(upper) - integral.atX(lower);
+    }
+
+    public double[] roots()
+    {
+        return new double[this.degree];
+    }
+
+    public static void main(String[] args) {
+        Polynomial p = new Polynomial(new double[] {12, -24, 48, -128, -128, 5, -1100});
+        System.out.println(p.differentiate(7));
     }
 }

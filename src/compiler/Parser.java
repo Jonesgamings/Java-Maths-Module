@@ -11,6 +11,7 @@ public class Parser {
 
     final ArrayList<TokenTypes> terms = new ArrayList<TokenTypes>(Arrays.asList(TokenTypes.MULTIPLY, TokenTypes.DIVIDE));
     final ArrayList<TokenTypes> expressions = new ArrayList<TokenTypes>(Arrays.asList(TokenTypes.PLUS, TokenTypes.MINUS));
+    final ArrayList<TokenTypes> functions = new ArrayList<TokenTypes>(Arrays.asList(TokenTypes.SIN, TokenTypes.COS, TokenTypes.TAN));
 
     public Parser(ArrayList<Token> tokens)
     {
@@ -32,19 +33,63 @@ public class Parser {
         }
     }
 
-    public NumberNode factor()
+    public Node function()
     {
         Token token = this.currentToken.copy();
-        if (expressions.contains(this.currentToken.type))
+        if (functions.contains(token.type))
         {
-
-        }
-        if (token.type == TokenTypes.NUMBER)
-        {
+            this.advance();
+            Node expression = this.expression();
+            if (this.currentToken.type == TokenTypes.R_PAR)
+            {
+                this.advance();
+                return new UnaryOpNode(token, expression);
+            }
+        } else if (token.type == TokenTypes.NUMBER) {
             this.advance();
             return new NumberNode(token);
         }
         return null;
+    }
+
+    public Node atom()
+    {
+        Token token = this.currentToken.copy();
+        if (token.type == TokenTypes.L_PAR) {
+            this.advance();
+            Node expression = this.expression();
+            if (this.currentToken.type == TokenTypes.R_PAR)
+            {
+                this.advance();
+                return expression;
+            }
+        }
+        return this.function();
+    }
+
+    public Node power()
+    {
+        Node left = this.atom();
+        while (this.currentToken.type == TokenTypes.POW)
+        {
+            Token operator = this.currentToken.copy();
+            this.advance();
+            Node right = this.factor();
+            left = new BinOpNode(left, operator, right);
+        }
+        return left;
+    }
+
+    public Node factor()
+    {
+        Token token = this.currentToken.copy();
+        if (expressions.contains(token.type))
+        {
+            this.advance();
+            Node factor = factor();
+            return new UnaryOpNode(token, factor);
+        }
+        return this.power();
     }
 
     public Node term()
@@ -54,7 +99,7 @@ public class Parser {
         {
             Token operator = this.currentToken.copy();
             this.advance();
-            NumberNode right = this.factor();
+            Node right = this.factor();
             left = new BinOpNode(left, operator, right);
         }
         return left;
@@ -74,7 +119,7 @@ public class Parser {
     }
 
     public static void main(String[] args) {
-        Lexer l = new Lexer("123 * 45 + 23");
+        Lexer l = new Lexer("SIN(-123 * 12) * -SIN(45 + 23)^4");
         Parser p = new Parser(l.createTokens());
         System.out.println(p.parse());
     }

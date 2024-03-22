@@ -1,0 +1,14 @@
+expression  :   term ((PLUS|MINUS) term)*
+
+term        :   factor ((MULTIPLY|DIVIDE) factor)*
+
+factor      :   (PLUS|MINUS) factor
+            :   power
+
+power       :   atom (POW factor)*
+
+atom        :   function
+            :   L_PAR expression R_PAR
+
+function    :   (FUNCTION) expression
+            :   NUMBER

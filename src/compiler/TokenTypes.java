@@ -9,4 +9,8 @@ enum TokenTypes
     MULTIPLY,
     L_PAR,
     R_PAR,
+    POW,
+    SIN,
+    COS,
+    TAN,
 }

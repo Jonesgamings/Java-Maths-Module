@@ -1,6 +1,8 @@
 package compiler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Lexer
 {
@@ -10,6 +12,7 @@ public class Lexer
     int currentPosition = -1;
     final String whitespaces = "\t\n ";
     final String numbers = "1234567890";
+    final String characters = "QWERTYUIOPLKJHGFDSAZXCVBNM";
 
     public Lexer(String text)
     {
@@ -49,6 +52,26 @@ public class Lexer
         return new Token(TokenTypes.NUMBER, Double.valueOf(numberString.toString()));
     }
 
+    public Token createFunction()
+    {
+        StringBuilder functionString = new StringBuilder();
+        while (this.currentPosition < text.length() && (this.characters + "(").contains(this.currentCharacter))
+        {
+            functionString.append(this.currentCharacter);
+            this.advance();
+        }
+        switch (functionString.toString())
+        {
+            case "SIN(":
+                return new Token(TokenTypes.SIN);
+            case "COS(":
+                return new Token(TokenTypes.COS);
+            case "TAN(":
+                return new Token(TokenTypes.TAN);
+        }
+        return null;
+    }
+
     public ArrayList<Token> createTokens()
     {
         while (this.currentPosition < text.length())
@@ -58,6 +81,14 @@ public class Lexer
             }
             else if (this.numbers.contains(this.currentCharacter)) {
                 this.tokens.add(this.createNumber());
+            }
+            else if (this.characters.contains(this.currentCharacter))
+            {
+                Token function = this.createFunction();
+                if (function != null)
+                {
+                    this.tokens.add(function);
+                }
             }
             else {
                 switch (this.currentCharacter) {
@@ -88,6 +119,11 @@ public class Lexer
 
                     case ")":
                         this.tokens.add(new Token(TokenTypes.R_PAR));
+                        this.advance();
+                        break;
+
+                    case "^":
+                        this.tokens.add(new Token(TokenTypes.POW));
                         this.advance();
                         break;
 

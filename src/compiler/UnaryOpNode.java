@@ -10,5 +10,10 @@ public class UnaryOpNode implements Node
         this.operator =operator;
         this.exprNode = exprNode;
     }
+
+    @Override
+    public String toString() {
+        return "(" + this.operator + ", " + this.exprNode + ")";
+    }
 }
 

@@ -10,7 +10,7 @@ public class Parser {
     int currentPosition = -1;
 
     final ArrayList<TokenTypes> terms = new ArrayList<TokenTypes>(Arrays.asList(TokenTypes.MULTIPLY, TokenTypes.DIVIDE));
-    final ArrayList<TokenTypes> expression = new ArrayList<TokenTypes>(Arrays.asList(TokenTypes.PLUS, TokenTypes.MINUS));
+    final ArrayList<TokenTypes> expressions = new ArrayList<TokenTypes>(Arrays.asList(TokenTypes.PLUS, TokenTypes.MINUS));
 
     public Parser(ArrayList<Token> tokens)
     {
@@ -35,6 +35,10 @@ public class Parser {
     public NumberNode factor()
     {
         Token token = this.currentToken.copy();
+        if (expressions.contains(this.currentToken.type))
+        {
+
+        }
         if (token.type == TokenTypes.NUMBER)
         {
             this.advance();
@@ -59,7 +63,7 @@ public class Parser {
     public Node expression()
     {
         Node left = this.term();
-        while (expression.contains(this.currentToken.type))
+        while (expressions.contains(this.currentToken.type))
         {
             Token operator = this.currentToken.copy();
             this.advance();

@@ -12,7 +12,7 @@ public class Lexer
     int currentPosition = -1;
     final String whitespaces = "\t\n ";
     final String numbers = "1234567890";
-    final String characters = "QWERTYUIOPLKJHGFDSAZXCVBNM";
+    final String characters = "QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm";
 
     public Lexer(String text)
     {
@@ -55,21 +55,17 @@ public class Lexer
     public Token createFunction()
     {
         StringBuilder functionString = new StringBuilder();
-        while (this.currentPosition < text.length() && (this.characters + "(").contains(this.currentCharacter))
+        while (this.currentPosition < text.length() && this.characters.contains(this.currentCharacter))
         {
             functionString.append(this.currentCharacter);
             this.advance();
         }
-        switch (functionString.toString())
-        {
-            case "SIN(":
-                return new Token(TokenTypes.SIN);
-            case "COS(":
-                return new Token(TokenTypes.COS);
-            case "TAN(":
-                return new Token(TokenTypes.TAN);
-        }
-        return null;
+        return switch (functionString.toString()) {
+            case "SIN" -> new Token(TokenTypes.SIN);
+            case "COS" -> new Token(TokenTypes.COS);
+            case "TAN" -> new Token(TokenTypes.TAN);
+            default -> new Token(TokenTypes.VARIABLE, functionString.toString());
+        };
     }
 
     public ArrayList<Token> createTokens()
@@ -136,7 +132,7 @@ public class Lexer
     }
 
     public static void main(String[] args) {
-        Lexer l = new Lexer("123.453485*123");
+        Lexer l = new Lexer("SIN(-123 * x) * -SIN(45 + 23)^4");
         System.out.println( l.createTokens());
     }
 }

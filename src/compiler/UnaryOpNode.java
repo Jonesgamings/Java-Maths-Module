@@ -7,7 +7,7 @@ public class UnaryOpNode implements Node
 
     public UnaryOpNode(Token operator, Node exprNode)
     {
-        this.operator =operator;
+        this.operator = operator;
         this.exprNode = exprNode;
     }
 

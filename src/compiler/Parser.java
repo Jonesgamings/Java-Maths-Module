@@ -39,15 +39,20 @@ public class Parser {
         if (functions.contains(token.type))
         {
             this.advance();
-            Node expression = this.expression();
-            if (this.currentToken.type == TokenTypes.R_PAR)
-            {
+            if (this.currentToken.type == TokenTypes.L_PAR) {
                 this.advance();
-                return new UnaryOpNode(token, expression);
+                Node expression = this.expression();
+                if (this.currentToken.type == TokenTypes.R_PAR) {
+                    this.advance();
+                    return new UnaryOpNode(token, expression);
+                }
             }
         } else if (token.type == TokenTypes.NUMBER) {
             this.advance();
             return new NumberNode(token);
+        } else if (token.type == TokenTypes.VARIABLE) {
+            this.advance();
+            return new VariableNode(token);
         }
         return null;
     }
@@ -119,7 +124,7 @@ public class Parser {
     }
 
     public static void main(String[] args) {
-        Lexer l = new Lexer("SIN(-123 * 12) * -SIN(45 + 23)^4");
+        Lexer l = new Lexer("SIN(-123 * x) * -SIN(45 + 23)^4");
         Parser p = new Parser(l.createTokens());
         System.out.println(p.parse());
     }

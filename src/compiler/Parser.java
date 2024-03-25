@@ -21,6 +21,8 @@ public class Parser {
 
     public Node parse()
     {
+        this.currentPosition = -1;
+        this.advance();
         return this.expression();
     }
 

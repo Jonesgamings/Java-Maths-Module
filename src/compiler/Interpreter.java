@@ -1,6 +1,5 @@
 package compiler;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class Interpreter
@@ -12,6 +11,8 @@ public class Interpreter
     {
         this.ASTree = ASTree;
         this.variables = variables;
+        this.variables.put("e", Math.E);
+        this.variables.put("pi", Math.PI);
     }
 
     public double calculateBinOpNode(BinOpNode node)
@@ -23,6 +24,7 @@ public class Interpreter
             case TokenTypes.MINUS -> this.calculateNode(left) - this.calculateNode(right);
             case TokenTypes.DIVIDE -> this.calculateNode(left) / this.calculateNode(right);
             case TokenTypes.MULTIPLY -> this.calculateNode(left) * this.calculateNode(right);
+            case TokenTypes.POW -> Math.pow(this.calculateNode(left), this.calculateNode(right));
             default -> 0;
         };
     }
@@ -74,11 +76,13 @@ public class Interpreter
     }
 
     public static void main(String[] args) {
-        HashMap<String, Double> variables = new HashMap<String, Double>();
-        variables.put("x", 3d);
-        Lexer l = new Lexer("(7 + x) * 5");
+        Lexer l = new Lexer("SIN(e^x)");
         Parser p = new Parser(l.createTokens());
-        Interpreter i = new Interpreter(p.parse(), variables);
-        System.out.println(i.calculateValue());
+        HashMap<String, Double> variables = new HashMap<String, Double>();
+        for (int index = -100; index<201; index++) {
+            variables.put("x", (double) index);
+            Interpreter i = new Interpreter(p.parse(), variables);
+            System.out.println(i.calculateValue());
+        }
     }
 }

@@ -130,9 +130,4 @@ public class Lexer
         }
         return this.tokens;
     }
-
-    public static void main(String[] args) {
-        Lexer l = new Lexer("SIN(-123 * x) * -SIN(45 + 23)^4");
-        System.out.println( l.createTokens());
-    }
 }

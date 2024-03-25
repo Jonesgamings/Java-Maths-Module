@@ -13,4 +13,9 @@ public class NumberNode implements Node
     public String toString() {
         return numberToken.toString();
     }
+
+    public double get()
+    {
+        return numberToken.value;
+    }
 }

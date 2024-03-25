@@ -1,18 +1,26 @@
 package compiler;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Interpreter
 {
     Node ASTree;
     HashMap<String, Double> variables;
 
-    public Interpreter(Node ASTree, HashMap<String, Double> variables)
+    public Interpreter(Node ASTree)
     {
         this.ASTree = ASTree;
-        this.variables = variables;
+        this.variables = new HashMap<String, Double>();
         this.variables.put("e", Math.E);
         this.variables.put("pi", Math.PI);
+    }
+
+    public boolean setVariable(String name, double value)
+    {
+        if (Objects.equals(name, "e") || Objects.equals(name, "pi")) {return false;}
+        this.variables.put(name, value);
+        return true;
     }
 
     public double calculateBinOpNode(BinOpNode node)
@@ -35,6 +43,9 @@ public class Interpreter
             case TokenTypes.SIN -> Math.sin(this.calculateNode(innerNode));
             case TokenTypes.COS -> Math.cos(this.calculateNode(innerNode));
             case TokenTypes.TAN -> Math.tan(this.calculateNode(innerNode));
+            case TokenTypes.SINH -> Math.sinh(this.calculateNode(innerNode));
+            case TokenTypes.COSH -> Math.cosh(this.calculateNode(innerNode));
+            case TokenTypes.TANH -> Math.tanh(this.calculateNode(innerNode));
             case TokenTypes.PLUS -> this.calculateNode(innerNode);
             case TokenTypes.MINUS -> -1 * this.calculateNode(innerNode);
             default -> 0;
@@ -70,6 +81,12 @@ public class Interpreter
         };
     }
 
+    public double calculateValue(HashMap<String, Double> variables)
+    {
+        this.variables = variables;
+        return calculateNode(this.ASTree);
+    }
+
     public double calculateValue()
     {
         return calculateNode(this.ASTree);
@@ -78,10 +95,9 @@ public class Interpreter
     public static void main(String[] args) {
         Lexer l = new Lexer("SIN(e^x)");
         Parser p = new Parser(l.createTokens());
-        HashMap<String, Double> variables = new HashMap<String, Double>();
+        Interpreter i = new Interpreter(p.parse());
         for (int index = -100; index<201; index++) {
-            variables.put("x", (double) index);
-            Interpreter i = new Interpreter(p.parse(), variables);
+            i.setVariable("x", index);
             System.out.println(i.calculateValue());
         }
     }

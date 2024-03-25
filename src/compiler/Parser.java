@@ -11,7 +11,7 @@ public class Parser {
 
     final ArrayList<TokenTypes> terms = new ArrayList<TokenTypes>(Arrays.asList(TokenTypes.MULTIPLY, TokenTypes.DIVIDE));
     final ArrayList<TokenTypes> expressions = new ArrayList<TokenTypes>(Arrays.asList(TokenTypes.PLUS, TokenTypes.MINUS));
-    final ArrayList<TokenTypes> functions = new ArrayList<TokenTypes>(Arrays.asList(TokenTypes.SIN, TokenTypes.COS, TokenTypes.TAN));
+    final ArrayList<TokenTypes> functions = new ArrayList<TokenTypes>(Arrays.asList(TokenTypes.SIN, TokenTypes.COS, TokenTypes.TAN, TokenTypes.SINH, TokenTypes.COSH, TokenTypes.TANH));
 
     public Parser(ArrayList<Token> tokens)
     {

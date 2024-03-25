@@ -52,7 +52,7 @@ public class Lexer
         return new Token(TokenTypes.NUMBER, Double.valueOf(numberString.toString()));
     }
 
-    public Token createFunction()
+    public Token createString()
     {
         StringBuilder functionString = new StringBuilder();
         while (this.currentPosition < text.length() && this.characters.contains(this.currentCharacter))
@@ -60,10 +60,13 @@ public class Lexer
             functionString.append(this.currentCharacter);
             this.advance();
         }
-        return switch (functionString.toString()) {
-            case "SIN" -> new Token(TokenTypes.SIN);
-            case "COS" -> new Token(TokenTypes.COS);
-            case "TAN" -> new Token(TokenTypes.TAN);
+        return switch (functionString.toString().toLowerCase()) {
+            case "sin" -> new Token(TokenTypes.SIN);
+            case "cos" -> new Token(TokenTypes.COS);
+            case "tan" -> new Token(TokenTypes.TAN);
+            case "sinh" -> new Token(TokenTypes.SINH);
+            case "cosh" -> new Token(TokenTypes.COSH);
+            case "tanh" -> new Token(TokenTypes.TANH);
             default -> new Token(TokenTypes.VARIABLE, functionString.toString());
         };
     }
@@ -80,10 +83,10 @@ public class Lexer
             }
             else if (this.characters.contains(this.currentCharacter))
             {
-                Token function = this.createFunction();
-                if (function != null)
+                Token varString = this.createString();
+                if (varString != null)
                 {
-                    this.tokens.add(function);
+                    this.tokens.add(varString);
                 }
             }
             else {

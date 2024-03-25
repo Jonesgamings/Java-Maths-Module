@@ -13,5 +13,8 @@ enum TokenTypes
     SIN,
     COS,
     TAN,
+    SINH,
+    COSH,
+    TANH,
     VARIABLE
 }

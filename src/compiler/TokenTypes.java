@@ -11,10 +11,19 @@ enum TokenTypes
     R_PAR,
     POW,
     SIN,
+
     COS,
     TAN,
     SINH,
     COSH,
     TANH,
+    ASIN,
+    ACOS,
+    ATAN,
+    ASINH,
+    ACOSH,
+    ATANH,
+    LOG,
+    COMMA,
     VARIABLE
 }

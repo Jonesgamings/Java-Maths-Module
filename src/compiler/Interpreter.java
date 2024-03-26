@@ -23,6 +23,13 @@ public class Interpreter
         return true;
     }
 
+    public double calculateLogNode(LogNode logNode)
+    {
+        Node base = logNode.base;
+        Node insideLog = logNode.insideLog;
+        return Math.log(this.calculateNode(insideLog)) / Math.log(this.calculateNode(base));
+    }
+
     public double calculateBinOpNode(BinOpNode node)
     {
         Node left = node.left;
@@ -36,6 +43,21 @@ public class Interpreter
             default -> 0;
         };
     }
+
+    public static double asinh(double value)
+    {
+        return Math.log(value + Math.sqrt(value*value + 1.0));
+    }
+
+    public static double acosh(double value)
+    {
+        return Math.log(value + Math.sqrt(value*value - 1.0));
+    }
+
+    public static double atanh(double value)
+    {
+        return 0.5*Math.log( (value + 1.0) / (value - 1.0) );
+    }
     public double calculateUnaryOpNode(UnaryOpNode node)
     {
         Node innerNode = node.exprNode;
@@ -46,6 +68,12 @@ public class Interpreter
             case TokenTypes.SINH -> Math.sinh(this.calculateNode(innerNode));
             case TokenTypes.COSH -> Math.cosh(this.calculateNode(innerNode));
             case TokenTypes.TANH -> Math.tanh(this.calculateNode(innerNode));
+            case TokenTypes.ASIN -> Math.asin(this.calculateNode(innerNode));
+            case TokenTypes.ACOS -> Math.acos(this.calculateNode(innerNode));
+            case TokenTypes.ATAN -> Math.atan(this.calculateNode(innerNode));
+            case TokenTypes.ASINH -> Interpreter.asinh(this.calculateNode(innerNode));
+            case TokenTypes.ACOSH -> Interpreter.acosh(this.calculateNode(innerNode));
+            case TokenTypes.ATANH -> Interpreter.atanh(this.calculateNode(innerNode));
             case TokenTypes.PLUS -> this.calculateNode(innerNode);
             case TokenTypes.MINUS -> -1 * this.calculateNode(innerNode);
             default -> 0;
@@ -77,14 +105,12 @@ public class Interpreter
                 VariableNode variableNode = (VariableNode) node;
                 yield this.calculateVariableNode(variableNode);
             }
+            case "compiler.LogNode" -> {
+                LogNode logNode = (LogNode) node;
+                yield  this.calculateLogNode(logNode);
+            }
             default -> 0;
         };
-    }
-
-    public double calculateValue(HashMap<String, Double> variables)
-    {
-        this.variables = variables;
-        return calculateNode(this.ASTree);
     }
 
     public double calculateValue()
@@ -93,12 +119,11 @@ public class Interpreter
     }
 
     public static void main(String[] args) {
-        Lexer l = new Lexer("SIN(e^x)");
+        double startTime = System.nanoTime();
+        Lexer l = new Lexer("log(e^x, x)");
         Parser p = new Parser(l.createTokens());
         Interpreter i = new Interpreter(p.parse());
-        for (int index = -100; index<201; index++) {
-            i.setVariable("x", index);
-            System.out.println(i.calculateValue());
-        }
+        i.setVariable("x", 1.01);
+        System.out.println(i.calculateValue());
     }
 }

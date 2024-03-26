@@ -49,7 +49,7 @@ public class Lexer
             }
             this.advance();
         }
-        return new Token(TokenTypes.NUMBER, Double.valueOf(numberString.toString()));
+        return new Token(TokenTypes.NUMBER, Double.parseDouble(numberString.toString()));
     }
 
     public Token createString()
@@ -67,12 +67,21 @@ public class Lexer
             case "sinh" -> new Token(TokenTypes.SINH);
             case "cosh" -> new Token(TokenTypes.COSH);
             case "tanh" -> new Token(TokenTypes.TANH);
+            case "asin" -> new Token(TokenTypes.ASIN);
+            case "acos" -> new Token(TokenTypes.ACOS);
+            case "atan" -> new Token(TokenTypes.ATAN);
+            case "asinh" -> new Token(TokenTypes.ASINH);
+            case "acosh" -> new Token(TokenTypes.ACOSH);
+            case "atanh" -> new Token(TokenTypes.ATANH);
+            case "log" -> new Token(TokenTypes.LOG);
             default -> new Token(TokenTypes.VARIABLE, functionString.toString());
         };
     }
 
     public ArrayList<Token> createTokens()
     {
+        this.currentPosition = -1;
+        this.advance();
         while (this.currentPosition < text.length())
         {
             if (this.whitespaces.contains(this.currentCharacter)) {
@@ -123,6 +132,11 @@ public class Lexer
 
                     case "^":
                         this.tokens.add(new Token(TokenTypes.POW));
+                        this.advance();
+                        break;
+
+                    case ",":
+                        this.tokens.add(new Token(TokenTypes.COMMA));
                         this.advance();
                         break;
 

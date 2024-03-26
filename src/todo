@@ -1,0 +1,4 @@
+- Allow compiler to use complex numbers using a custom function C(r, i)
+- Add differentiation
+- Add integration
+- Allow Sum and Product notation

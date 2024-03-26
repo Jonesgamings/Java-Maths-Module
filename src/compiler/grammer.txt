@@ -11,5 +11,6 @@ atom        :   function
             :   L_PAR expression R_PAR
 
 function    :   (FUNCTION) expression
+            :   (LOG) (expression, expression)
             :   NUMBER
             :   STRING variable | constant

@@ -38,8 +38,8 @@ public class Token
     @Override
     public String toString()
     {
-        if (this.value != 0) {return this.type + " : " + this.value;}
-        if (this.valueString != null) {return this.type + " : " + this.valueString;}
+        if (this.value != 0) {return this.type + ":" + this.value;}
+        if (this.valueString != null) {return this.type + ":" + this.valueString;}
         return this.type.toString();
     }
 }

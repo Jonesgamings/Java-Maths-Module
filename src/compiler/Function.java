@@ -1,7 +1,7 @@
 package compiler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Objects;
 
 public class Function {
 
@@ -10,7 +10,9 @@ public class Function {
     Node ASTree;
     Interpreter interpreter;
     String variableName;
-    static double deltaX = Math.pow(10, -30);
+    static final double deltaX = Math.pow(10, -10);
+    static final double segments = Math.pow(10, 4);
+    static final double iterations = Math.pow(10, 4);
 
     public Function(String mathString)
     {
@@ -27,7 +29,7 @@ public class Function {
         {
             if (token.type == TokenTypes.VARIABLE)
             {
-                if (token.valueString != "e" && token.valueString != "pi")
+                if (!Objects.equals(token.valueString, "e") && !Objects.equals(token.valueString, "pi") && !Objects.equals(token.valueString, "h"))
                 {
                     this.variableName = token.valueString;
                 }
@@ -65,7 +67,6 @@ public class Function {
     {
         double startY = this.getAt(start);
         double endY = this.getAt(end);
-        int segments = 10000;
         double h = (end - start) / segments;
         double sum=0;
         for (int i = 1; i < segments; i++)
@@ -75,8 +76,70 @@ public class Function {
         return (h/2) * (startY + endY + 2*sum);
     }
 
+    public double volumeRevolution(double start, double end)
+    {
+        double startY = Math.pow(this.getAt(start), 2);
+        double endY = Math.pow(this.getAt(end), 2);
+        double h = (end - start) / segments;
+        double sum=0;
+        for (int i = 1; i < segments; i++)
+        {
+            sum += Math.pow(this.getAt(start + (i * h)), 2);
+        }
+        return Math.PI * (h/2) * (startY + endY + 2*sum);
+    }
+
+    public String kindaDerivative()
+    {
+        return "((" + this.mathString.replace("x", ("(x+h)")) + ") - (" + this.mathString + "))/h";
+    }
+
+    public double volumeRevolution(double start, double end, double segments)
+    {
+        double startY = Math.pow(this.getAt(start), 2);
+        double endY = Math.pow(this.getAt(end), 2);
+        double h = (end - start) / segments;
+        double sum=0;
+        for (int i = 1; i < segments; i++)
+        {
+            sum += Math.pow(this.getAt(start + (i * h)), 2);
+        }
+        return Math.PI * (h/2) * (startY + endY + 2*sum);
+    }
+
+    public double meanValue(double start, double end, int segments)
+    {
+        return 1/(end-start) * this.integral(start, end, segments);
+    }
+
+    public double meanValue(double start, double end)
+    {
+        return 1/(end-start) * this.integral(start, end);
+    }
+
+    public double root(double start, int iterations)
+    {
+        double lastX = start;
+        for (int i = 0; i < iterations; i++)
+        {
+            lastX = lastX - (this.getAt(lastX) / this.derivative(lastX));
+        }
+        return lastX;
+    }
+
+    public double root(double start)
+    {
+        double lastX = start;
+        for (int i = 0; i < iterations; i++)
+        {
+            lastX = lastX - (this.getAt(lastX) / this.derivative(lastX));
+        }
+        return lastX;
+    }
+
     public static void main(String[] args) {
-        Function function = new Function("sin(x)");
-        System.out.println(function.integral(0, 1000, 100));
+        Function function = new Function("e-e^(sin(x))");
+        Function F2 = new Function(function.kindaDerivative());
+        System.out.println(F2.getAt(0));
     }
 }

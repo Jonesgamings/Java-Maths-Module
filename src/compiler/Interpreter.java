@@ -14,6 +14,7 @@ public class Interpreter
         this.variables = new HashMap<String, Double>();
         this.variables.put("e", Math.E);
         this.variables.put("pi", Math.PI);
+        this.variables.put("h", Function.deltaX);
     }
 
     public boolean setVariable(String name, double value)

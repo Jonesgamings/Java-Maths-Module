@@ -89,11 +89,6 @@ public class Function {
         return Math.PI * (h/2) * (startY + endY + 2*sum);
     }
 
-    public String kindaDerivative()
-    {
-        return "((" + this.mathString.replace("x", ("(x+h)")) + ") - (" + this.mathString + "))/h";
-    }
-
     public double volumeRevolution(double start, double end, double segments)
     {
         double startY = Math.pow(this.getAt(start), 2);
@@ -139,7 +134,6 @@ public class Function {
 
     public static void main(String[] args) {
         Function function = new Function("e-e^(sin(x))");
-        Function F2 = new Function(function.kindaDerivative());
-        System.out.println(F2.getAt(0));
+        System.out.println(function.getAt(1));
     }
 }

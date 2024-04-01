@@ -36,6 +36,16 @@ public class Plane
         return normal.x + "x + " + normal.y + "y + " + normal.z + "z = " + this.scalar_product;
     }
 
+    public double angle(Line line)
+    {
+        return Math.PI/2 - Math.acos(Math.abs(this.normal.dot(line.direction))/(this.normal.magnitude() * line.direction.magnitude()));
+    }
+
+    public double angle(Plane plane)
+    {
+        return Math.acos((this.normal.dot(plane.normal)) / (this.normal.magnitude() * plane.normal.magnitude()));
+    }
+
     public double distance(Plane plane)
     {
         Line normal = new Line(this.normal, this.point);
@@ -90,12 +100,31 @@ public class Plane
         return null;
     }
 
+    public Vector3D reflect(Vector3D point)
+    {
+        return point.add(this.normal.multiply((2 * (this.scalar_product - this.normal.dot(point)))/(this.normal.dot(this.normal))));
+    }
+
+    public Line reflect(Line line)
+    {
+        Vector3D p1 = this.reflect(line.position(-10));
+        Vector3D p2 = this.reflect(line.position(10));
+        Vector3D direction = p1.subtract(p2);
+        return new Line(direction, p1);
+    }
+
+    public Plane reflect(Plane plane)
+    {
+        Line l1 = this.reflect(new Line(plane.normal, plane.point));
+        return new Plane(l1.direction, l1.point);
+    }
+
     public static void main(String[] args)
     {
-        Plane p1 = new Plane(new Vector3D(1 ,2, 0), 13);
-        Plane p2 = new Plane(new Vector3D(0,2,-3),-13);
-        System.out.println(p1.intersection(p2));
+        Plane p1 = new Plane(new Vector3D(3 ,1, 2), 13);
+        Plane p2 = new Plane(new Vector3D(4, -2, 5), Vector3D.zeroes());
         System.out.println(p1);
         System.out.println(p2);
+        System.out.println(p1.reflect(p2));
     }
 }

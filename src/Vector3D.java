@@ -19,6 +19,21 @@ public class Vector3D
         return new Vector3D(newX, newY, newZ);
     }
 
+    public CylindricalCoordinate toCylindrical()
+    {
+        double angle = Math.atan2(this.y, this.x);
+        double radius = Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+        return new CylindricalCoordinate(radius, this.z, angle);
+    }
+
+    public SphericalCoordinate toSpherical()
+    {
+        double radius = this.magnitude();
+        double theta = Math.atan2(this.y, this.x);
+        double phi = Math.acos(this.z / radius);
+        return new SphericalCoordinate(theta, phi, radius);
+    }
+
     @Override
     public String toString()
     {
@@ -75,6 +90,11 @@ public class Vector3D
         double newY = this.z * vector.x - this.x * vector.z;
         double newZ = this.x * vector.y - this.y * vector.x;
         return new Vector3D(newX, newY, newZ);
+    }
+
+    public static Vector3D zeroes()
+    {
+        return new Vector3D(0, 0, 0);
     }
 
     public double dot(Vector3D vector)

@@ -14,6 +14,16 @@ public class Line
         this.point = point;
     }
 
+    public double angle(Line line)
+    {
+        return Math.acos(this.direction.dot(line.direction) / (this.direction.magnitude() * line.direction.magnitude()));
+    }
+
+    public double angle(Plane plane)
+    {
+        return Math.PI/2 - Math.acos(Math.abs(this.direction.dot(plane.normal)) / (this.direction.magnitude() * plane.normal.magnitude()));
+    }
+
     public double distance(Plane plane)
     {
         return plane.distance(point);

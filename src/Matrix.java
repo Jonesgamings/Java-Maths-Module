@@ -1,7 +1,6 @@
 import java.util.Random;
 
-public class Matrix
-{
+public class Matrix {
     int rows;
     int columns;
     private double[][] matrix;
@@ -98,9 +97,10 @@ public class Matrix
         this.matrix[row][column] = value;
     }
 
+
     public static double determinate2x2(Matrix m)
     {
-        return m.getAt(0, 0) * m.getAt(1, 1) - m.getAt(0, 1) * m.getAt(1, 0);
+        return (m.getAt(0, 0) * (m.getAt(1, 1)) - (m.getAt(0, 1) * m.getAt(1, 0)));
     }
 
     public static Matrix identity(int size)
@@ -130,9 +130,9 @@ public class Matrix
 
     public double determinate()
     {
-        if (columns != rows){ return 0f;}
+        if (columns != rows){ return Double.NaN;}
         if (columns == 2) {return Matrix.determinate2x2(this);}
-        double determinate = 0f;
+        double determinate = 0;
         int sign = -1;
         for (int index = 0; index < columns; index ++) {
             double value = this.matrix[0][index];
@@ -160,7 +160,7 @@ public class Matrix
     {
         double determinate = determinate();
         Matrix inverse = new Matrix(rows, columns);
-        if (determinate == 0) {return null;}
+        if (Double.isNaN(determinate)) {return null;}
         if (inverse.columns != inverse.rows) {return null;}
         if (inverse.columns == 2) {
             return new Matrix(2, 2).setMatrix(new double[][] {{matrix[1][1], -matrix[0][1]}, {-matrix[1][0], matrix[0][0]}}).divide(this.determinate());
@@ -176,7 +176,18 @@ public class Matrix
         return inverse.transpose();
     }
 
-    private static Matrix submatrix(Matrix matrix, int ExRow, int ExColumn)
+    public double trace()
+    {
+        if (this.columns != this.rows) {return Double.NaN;}
+        double sum = 0;
+        for (int i = 0; i < this.rows; i++)
+        {
+            sum += this.getAt(i, i);
+        }
+        return sum;
+    }
+
+    public static Matrix submatrix(Matrix matrix, int ExRow, int ExColumn)
     {
         Matrix newMatrix = new Matrix(matrix.rows-1, matrix.columns-1);
         for (int row = 0; row < matrix.rows; row++)
@@ -202,6 +213,16 @@ public class Matrix
         return 0;
     }
 
+    public Matrix power(int pow)
+    {
+        Matrix newMatrix = this;
+        for (int i =0; i<(pow-1); i++)
+        {
+            newMatrix = newMatrix.multiply(this);
+        }
+        return newMatrix;
+    }
+
     @Override
     public String toString() {
         StringBuilder matrixString = new StringBuilder("{{");
@@ -220,9 +241,21 @@ public class Matrix
         matrixString.append("}");
         return  matrixString.toString();
     }
+
+    public ComplexMatrix toComplex()
+    {
+        ComplexMatrix newComplexMatrix = new ComplexMatrix(rows, columns);
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                newComplexMatrix.setAt(row, column, this.getAt(row, column));
+            }
+        }
+        return newComplexMatrix;
+    }
+
     public static void main(String[] args){
-        Matrix m = new Matrix(4, 4).random_values(1, 10);
+        Matrix m = new Matrix(2, 2).random_values(1, 10);
         System.out.println(m);
-        System.out.println(m.determinate());
+        System.out.println(m.power(2));
     }
 }

@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+
 public class Polynomial
 {
     double[] coefficients;
@@ -20,6 +24,33 @@ public class Polynomial
             if (this.degree-i == 1) {polyString.append("x + ");}
             else{if (this.degree-i != 0) {polyString.append("x^").append(this.degree - i).append(" + ");}}}
         return polyString.toString();
+    }
+
+    public ComplexMatrix atX(ComplexMatrix x)
+    {
+        ComplexMatrix total = new ComplexMatrix(x.rows, x.columns);
+        for (int i=0; i < this.degree+1; i++) {
+            total = total.add(x.power(degree-i).multiply(this.coefficients[i]));
+        }
+        return total;
+    }
+
+    public Matrix atX(Matrix x)
+    {
+        Matrix total = new Matrix(x.rows, x.columns);
+        for (int i=0; i < this.degree+1; i++) {
+            total = total.add(x.power(degree-i).multiply(this.coefficients[i]));
+        }
+        return total;
+    }
+
+    public ComplexNumber atX(ComplexNumber x)
+    {
+        ComplexNumber total = new ComplexNumber(0, 0);
+        for (int i=0; i < this.degree+1; i++) {
+            total = total.add(x.power(degree-i).multiply(this.coefficients[i]));
+        }
+        return total;
     }
 
     public double atX(double x)
@@ -108,8 +139,30 @@ public class Polynomial
         return new double[this.degree];
     }
 
+    public static double Factorial(int n)
+    {
+        if (n < 0) {return Double.NaN;}
+        if (n == 1 || n == 0) {return 1;}
+        double total = 1;
+        for (int i =1; i<n+1; i++)
+        {
+            total *= i;
+        }
+        return total;
+    }
+
+    public static Polynomial NtoX(double n, int accuracy)
+    {
+        if (accuracy > 171) {accuracy = 171;}
+        ArrayList<Double> coefficients = new ArrayList<>();
+        for (int i =0; i<accuracy; i++)
+        {
+            coefficients.add(Math.pow(Math.log(n), i) / Polynomial.Factorial(i));
+        }
+        return new Polynomial(coefficients.reversed().stream().mapToDouble(i -> i).toArray());
+    }
+
     public static void main(String[] args) {
-        Polynomial p = new Polynomial(new double[] {12, -24, 48, -128, -128, 5, -1100});
-        System.out.println(p.differentiate(7));
+
     }
 }

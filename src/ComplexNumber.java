@@ -4,11 +4,24 @@ public class ComplexNumber
 {
     double real;
     double imaginary;
+    final static ComplexNumber NaN = new ComplexNumber(Double.NaN, Double.NaN);
+
+    public static boolean isNaN(ComplexNumber number)
+    {
+        return number.equals(NaN);
+    }
 
     public ComplexNumber(double real, double imaginary)
     {
         this.real = real;
         this.imaginary = imaginary;
+    }
+
+    @Override
+    public String toString() {
+        if (this.imaginary > 0) {return this.real + " + " + this.imaginary + "i";}
+        else if (this.imaginary == 0) {return this.real + "";}
+        else {return this.real + " " + this.imaginary + "i";}
     }
 
     public ComplexNumber conjugate()

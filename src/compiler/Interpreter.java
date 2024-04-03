@@ -17,6 +17,60 @@ public class Interpreter
         this.variables.put("h", Function.deltaX);
     }
 
+    public Node derivative()
+    {
+        return this.derivativeNode(this.ASTree);
+    }
+
+    public Node derivativeBinOpNode(BinOpNode node)
+    {
+        Node left = node.left;
+        Node right = node.right;
+        switch (node.operator.type) {
+            case TokenTypes.PLUS: {return new BinOpNode(this.derivativeNode(left), new Token(TokenTypes.PLUS), this.derivativeNode(right));}
+            case TokenTypes.MINUS: {return new BinOpNode(this.derivativeNode(left), new Token(TokenTypes.MINUS), this.derivativeNode(right));}
+            //case TokenTypes.DIVIDE : {this.calculateNode(left) / this.calculateNode(right);}
+            case TokenTypes.MULTIPLY: {return new BinOpNode(new BinOpNode(left, new Token(TokenTypes.MULTIPLY), this.derivativeNode(right)) , new Token(TokenTypes.PLUS), new BinOpNode(right, new Token(TokenTypes.MULTIPLY), this.derivativeNode(left)));}
+            case TokenTypes.POW:
+            {
+                Node a = new BinOpNode(left, new Token(TokenTypes.POW), new BinOpNode(right, new Token(TokenTypes.MINUS), new NumberNode(new Token(TokenTypes.NUMBER, -1))));
+                Node LEFT = new BinOpNode(right, new Token(TokenTypes.MULTIPLY), new BinOpNode(a, new Token(TokenTypes.MULTIPLY), this.derivativeNode(left)));
+                Node c = new BinOpNode(left, new Token(TokenTypes.POW), right);
+                Node d = new LogNode(new NumberNode(new Token(TokenTypes.NUMBER, Math.E)), left);
+                Node RIGHT = new BinOpNode(c, new Token(TokenTypes.MULTIPLY), new BinOpNode(d, new Token(TokenTypes.MULTIPLY), this.derivativeNode(right)));
+                return new BinOpNode(LEFT, new Token(TokenTypes.PLUS), RIGHT);
+            }
+        };
+        return null;
+    }
+
+    public Node derivativeNode(Node node)
+    {
+        return switch (node.getClass().getName()) {
+            case "compiler.BinOpNode" -> {
+                BinOpNode binOpNode = (BinOpNode) node;
+                yield this.derivativeBinOpNode(binOpNode);
+            }
+            case "compiler.NumberNode" -> {
+                yield new NumberNode(new Token(TokenTypes.NUMBER, 0));
+            }
+            case "compiler.VariableNode" ->
+            {
+                VariableNode variableNode = (VariableNode) node;
+                yield this.derivativeVariableNode(variableNode);
+            }
+            case "compiler.UnaryOpNode" -> {
+                UnaryOpNode unaryOpNode = (UnaryOpNode) node;
+                yield this.derivativeUnaryOpNode(unaryOpNode);
+            }
+            case "compiler.LogNode" -> {
+                LogNode logNode = (LogNode) node;
+                yield  this.derivativeLogNode(logNode);
+            }
+            default -> 0;
+        };
+    }
+
     public boolean setVariable(String name, double value)
     {
         if (Objects.equals(name, "e") || Objects.equals(name, "pi")) {return false;}

@@ -1,5 +1,3 @@
-import java.lang.foreign.MemorySegment;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Matrix {

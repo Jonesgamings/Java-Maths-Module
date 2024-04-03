@@ -105,8 +105,21 @@ public class ComplexNumber
         return new ComplexNumber(Math.pow(magnitude, power) * Math.cos(power * angle), Math.pow(magnitude, power) * Math.sin(power * angle));
     }
 
+    public ComplexNumber power(ComplexNumber power)
+    {
+        Polynomial eX = Polynomial.NtoX(Math.E, 200);
+        ComplexNumber newComplex = power.multiply(new ComplexNumber(Math.log(this.magnitude()), this.angle()));
+        return eX.atX(newComplex);
+    }
+
     public Vector2D toVector()
     {
         return new Vector2D(this.real, this.imaginary);
+    }
+
+    public static void main(String[] args) {
+        ComplexNumber c1 = new ComplexNumber(1 , 1);
+        ComplexNumber c2 = new ComplexNumber(3, 4);
+        System.out.println(c1.power(c2));
     }
 }

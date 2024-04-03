@@ -112,8 +112,18 @@ public class Vector3D
         return new Vector3D(this.x/factor, this.y/factor, this.z/factor);
     }
 
+    public VectorND toVectorND()
+    {
+        return new VectorND(new double[] {this.x, this.y, this.z});
+    }
+
     public Matrix toMatrix()
     {
         return new Matrix(3, 1).setMatrix(new double[][] {{this.x}, {this.y}, {this.z}});
+    }
+
+    public Quaternion toQuaternion()
+    {
+        return new Quaternion(0, this);
     }
 }

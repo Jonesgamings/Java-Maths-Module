@@ -151,7 +151,7 @@ public class ComplexMatrix{
 
     public static ComplexNumber determinate2x2(ComplexMatrix m)
     {
-        return (m.getAt(0, 0).multiply (m.getAt(1, 1)).subtract (m.getAt(0, 1).multiply( m.getAt(1, 0))));
+        return ((m.getAt(0, 0).multiply (m.getAt(1, 1))).subtract (m.getAt(0, 1).multiply( m.getAt(1, 0))));
     }
 
     public static ComplexMatrix identity(int size)
@@ -188,7 +188,7 @@ public class ComplexMatrix{
         for (int index = 0; index < columns; index ++) {
             ComplexNumber value = this.matrix[0][index];
             ComplexMatrix newComplexMatrix = ComplexMatrix.subMatrix(this, 0, index);
-            determinate = determinate.add(newComplexMatrix.determinate().multiply(value).multiply(sign * -1));
+            determinate = determinate.add(((newComplexMatrix.determinate()).multiply(value)).multiply(sign * -1));
             sign *= -1;
         }
         return determinate;
@@ -221,7 +221,7 @@ public class ComplexMatrix{
             for (int column = 0; column < columns; column++)
             {
                 ComplexNumber subDeterminate = ComplexMatrix.subMatrix(this, row, column).determinate();
-                inverse.setAt(row, column, new ComplexNumber(1, 0).divide(determinate).multiply(subDeterminate).multiply(Math.pow(-1, (row + column)%2)));
+                inverse.setAt(row, column, ((new ComplexNumber(1, 0).divide(determinate)).multiply(subDeterminate)).multiply(Math.pow(-1, (row + column)%2)));
             }
         }
         return inverse.transpose();

@@ -3,6 +3,6 @@
 - Possible nth differentiation (and maybe partial)
 
 - Matrix Eigenvalues and Eigenvectors
-- Vectors raised to powered / factors raised to vectors
 - Add more taylor series
-- Complex numbers and powers and stuff
+- Matrix rotations on Vectors
+- Matrix to Quaternion

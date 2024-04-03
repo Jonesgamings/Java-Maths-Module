@@ -38,9 +38,29 @@ public class ComplexNumber
     {
         return new ComplexNumber(this.real - number.real, this.imaginary - number.imaginary);
     }
+
+    public ComplexNumber normalise()
+    {
+        return this.divide(this.magnitude());
+    }
     public ComplexNumber multiply(ComplexNumber number)
     {
         return new ComplexNumber(this.real * number.real - this.imaginary * number.imaginary, this.real * number.imaginary + this.imaginary * number.real);
+    }
+
+    public Vector2D rotate(Vector2D vector)
+    {
+        return this.multiply(vector.toComplex()).toVector();
+    }
+
+    public ComplexNumber rotate(ComplexNumber complexNumber)
+    {
+        return this.multiply(complexNumber);
+    }
+
+    public ComplexNumber inverse()
+    {
+        return this.conjugate().divide(Math.pow(this.real, 2) + Math.pow(this.imaginary, 2));
     }
     public ComplexNumber divide(ComplexNumber number)
     {
@@ -83,5 +103,10 @@ public class ComplexNumber
         double angle = angle();
         double magnitude = magnitude();
         return new ComplexNumber(Math.pow(magnitude, power) * Math.cos(power * angle), Math.pow(magnitude, power) * Math.sin(power * angle));
+    }
+
+    public Vector2D toVector()
+    {
+        return new Vector2D(this.real, this.imaginary);
     }
 }

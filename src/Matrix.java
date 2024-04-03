@@ -1,3 +1,5 @@
+import java.lang.foreign.MemorySegment;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Matrix {
@@ -128,6 +130,57 @@ public class Matrix {
         return newMatrix;
     }
 
+    public VectorND toVector()
+    {
+        if (this.rows == 1)
+        {
+            return new VectorND(this.matrix[0]);
+        }
+        else if (columns == 1) {
+            double[] values = new double[this.rows];
+            for (int i = 0; i < this.rows; i++)
+            {
+                values[i] = this.getAt(i, 0);
+            }
+            return new VectorND(values);
+        }
+        return null;
+    }
+
+    // to Quaternion
+
+    public static Matrix rotationX(double angle)
+    {
+        return new Matrix(3, 3).setMatrix(new double[][] {
+                {1, 0, 0},
+                {0, Math.cos(angle), -Math.sin(angle)},
+                {0, Math.sin(angle), Math.cos(angle)}
+        });
+    }
+
+    public static Matrix rotationY(double angle)
+    {
+        return new Matrix(3, 3).setMatrix(new double[][] {
+                {Math.cos(angle), 0, Math.sin(angle)},
+                {0, 1, 0},
+                {-Math.sin(angle), 0, Math.cos(angle)}
+        });
+    }
+
+    public static Matrix rotationZ(double angle)
+    {
+        return new Matrix(3, 3).setMatrix(new double[][] {
+                {Math.cos(angle), -Math.sin(angle), 0},
+                {Math.sin(angle), Math.cos(angle),0},
+                {0, 0, 1}
+        });
+    }
+
+    public static Matrix rotation2D(double angle)
+    {
+        return new Matrix(2, 2).setMatrix(new double[][] {{Math.cos(angle), -Math.sin(angle)}, {Math.sin(angle), Math.cos(angle)}});
+    }
+
     public double determinate()
     {
         if (columns != rows){ return Double.NaN;}
@@ -254,8 +307,10 @@ public class Matrix {
     }
 
     public static void main(String[] args){
-        Matrix m = new Matrix(2, 2).random_values(1, 10);
-        System.out.println(m);
-        System.out.println(m.power(2));
+        Matrix m1 = new Matrix(2, 2).random_values(1, 10);
+        Matrix m2 = new Matrix(2, 2).random_values(1, 10);
+        System.out.println(m1);
+        System.out.println(m2);
+        System.out.println(m1.multiply(m2));
     }
 }

@@ -159,6 +159,33 @@ public class VectorND
         return dotProduct;
     }
 
+    public Vector3D toVector3D()
+    {
+        if (this.dimensions == 3)
+        {
+            return new Vector3D(this.getValue(0), this.getValue(1), this.getValue(2));
+        }
+        return null;
+    }
+
+    public Vector2D toVector2D()
+    {
+        if (this.dimensions == 2)
+        {
+            return new Vector2D(this.getValue(0), this.getValue(1));
+        }
+        return null;
+    }
+
+    public Quaternion toQuaternion()
+    {
+        if (this.dimensions == 4)
+        {
+            return new Quaternion(this.getValue(0), this.getValue(1), this.getValue(2), this.getValue(3));
+        }
+        return null;
+    }
+
     public VectorND cross(VectorND[] vectors)
     {
         ArrayList<VectorND> vectorsList = new ArrayList<>(Arrays.asList(vectors));

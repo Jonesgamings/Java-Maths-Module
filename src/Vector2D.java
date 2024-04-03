@@ -25,6 +25,11 @@ public class Vector2D {
         return new Vector2D(newX, newY);
     }
 
+    public Vector2D normalise()
+    {
+        return this.divide(this.magnitude());
+    }
+
     public double magnitude() {
         return Math.pow(Math.pow(this.x, 2) + Math.pow(this.y, 2), 0.5);
     }
@@ -57,6 +62,11 @@ public class Vector2D {
         return new Vector2D(this.x / factor, this.y / factor);
     }
 
+    public VectorND toVectorND()
+    {
+        return new VectorND(new double[] {this.x, this.y});
+    }
+
     public Matrix toMatrix() {
         return new Matrix(2, 1).setMatrix(new double[][]{{this.x}, {this.y}});
     }
@@ -64,5 +74,10 @@ public class Vector2D {
     public Polar2D toPolar()
     {
         return new Polar2D(this.angle(), this.magnitude());
+    }
+
+    public ComplexNumber toComplex()
+    {
+        return new ComplexNumber(x, y);
     }
 }

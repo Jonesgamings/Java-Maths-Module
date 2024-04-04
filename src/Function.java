@@ -208,8 +208,8 @@ public class Function {
     }
 
     public static void main(String[] args) {
-        Function function = new Function("e^x").setVariableName("x");
+        Function function = new Function("x^2").setVariableName("x");
         Polynomial p = function.taylorSeries(100);
-        System.out.println(p.atX(new Matrix(2, 2).setMatrix(new double[][] {{2, 1}, {1, 2}})));
+        System.out.println(p.atX(new Matrix(2, 2).setMatrix(new double[][] {{1 , 0}, {0, 1}})));
     }
 }

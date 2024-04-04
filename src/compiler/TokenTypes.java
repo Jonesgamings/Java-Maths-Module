@@ -1,6 +1,6 @@
 package compiler;
 
-enum TokenTypes
+public enum TokenTypes
 {
     NUMBER,
     PLUS,

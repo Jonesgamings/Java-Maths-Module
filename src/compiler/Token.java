@@ -1,10 +1,12 @@
 package compiler;
 
+import java.util.Objects;
+
 public class Token
 {
-    TokenTypes type;
+    public TokenTypes type;
     double value;
-    String valueString;
+    public String valueString;
 
     public Token(TokenTypes type, String value)
     {
@@ -36,10 +38,32 @@ public class Token
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {return false;}
+
+        if (obj.getClass() != this.getClass()) {return false;}
+
+        Token token = (Token) obj;
+        if (type != token.type) {return false;}
+        if (value != token.value) {return false;}
+        if (!Objects.equals(valueString, token.valueString)) {return false;}
+        return true;
+    }
+
+    @Override
     public String toString()
     {
-        if (this.value != 0) {return this.type + ":" + this.value;}
+        if (this.type == TokenTypes.NUMBER) {return this.type + ":" + this.value;}
         if (this.valueString != null) {return this.type + ":" + this.valueString;}
+        return this.type.toString();
+    }
+
+    public String toText()
+    {
+        if (this.type == TokenTypes.MINUS || this.type == TokenTypes.PLUS)
+        {
+            return "-";
+        }
         return this.type.toString();
     }
 }

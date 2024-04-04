@@ -14,6 +14,15 @@ public class NumberNode implements Node
         return numberToken.toString();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {return false;}
+
+        if (obj.getClass() != this.getClass()) {return false;}
+        NumberNode node = (NumberNode) obj;
+        return this.numberToken.equals(node.numberToken);
+    }
+
     public double get()
     {
         return numberToken.value;

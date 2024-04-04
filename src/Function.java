@@ -1,4 +1,4 @@
-package compiler;
+import compiler.*;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -23,18 +23,61 @@ public class Function {
         this.getVariableName();
     }
 
+    public Function copy()
+    {
+        return new Function(this.ASTree, this.variableName);
+    }
+
+    public Polynomial taylorSeries(int degree)
+    {
+        ArrayList<Double> coefficients = new ArrayList<>();
+        Function f = this;
+        for (int i = 0; i < degree; i++)
+        {
+            coefficients.add(f.getAt(0)/Polynomial.Factorial(i));
+            f.removeVariable(variableName);
+            f = f.derivative(variableName);
+        }
+        return new Polynomial(coefficients.reversed().stream().mapToDouble(i -> i).toArray());
+    }
+
+    @Override
+    public String toString()
+    {
+        return this.interpreter.toString();
+    }
+
+    public Function(Node ASTree, String variableName)
+    {
+        this.ASTree = ASTree;
+        this.interpreter = new Interpreter(this.ASTree);
+        this.variableName = variableName;
+    }
+
+    public Function setVariableName(String variableName)
+    {
+        this.variableName = variableName;
+        return this;
+    }
+
     public void getVariableName()
     {
-        for (Token token: this.tokens)
-        {
-            if (token.type == TokenTypes.VARIABLE)
-            {
-                if (!Objects.equals(token.valueString, "e") && !Objects.equals(token.valueString, "pi") && !Objects.equals(token.valueString, "h"))
-                {
-                    this.variableName = token.valueString;
+        if(!tokens.isEmpty()) {
+            for (Token token : this.tokens) {
+                if (token.type == TokenTypes.VARIABLE) {
+                    if (!Objects.equals(token.valueString, "e") && !Objects.equals(token.valueString, "pi") && !Objects.equals(token.valueString, "h")) {
+                        this.variableName = token.valueString;
+                        return;
+                    }
                 }
             }
         }
+        this.variableName = "x";
+    }
+
+    public void removeVariable(String variableName)
+    {
+        this.interpreter.removeVariable(variableName);
     }
 
     public double getAt(double position)
@@ -49,6 +92,38 @@ public class Function {
         double endValue = this.getAt(position + deltaX);
         return (endValue - startValue) / deltaX;
     }
+
+    public Function derivative(String variableName)
+    {
+        this.variableName = variableName;
+        return new Function(this.interpreter.derivative(), this.variableName);
+    }
+
+    public Function derivative()
+    {
+        return new Function(this.interpreter.derivative(), variableName);
+    }
+
+    public Function derivative(int n, String variableName)
+    {
+        this.variableName = variableName;
+        Function function = this;
+        for (int i = 0; i < n; i++)
+        {
+            function = function.derivative(variableName);
+        }
+        return function;
+    }
+    public Function derivative(int n)
+    {
+        Function function = this;
+        for (int i = 0; i < n; i++)
+        {
+            function = function.derivative(variableName);
+        }
+        return function;
+    }
+
 
     public double integral(double start, double end, int segments)
     {
@@ -133,7 +208,8 @@ public class Function {
     }
 
     public static void main(String[] args) {
-        Function function = new Function("e-e^(sin(x))");
-        System.out.println(function.getAt(1));
+        Function function = new Function("e^x").setVariableName("x");
+        Polynomial p = function.taylorSeries(100);
+        System.out.println(p.atX(new Matrix(2, 2).setMatrix(new double[][] {{2, 1}, {1, 2}})));
     }
 }

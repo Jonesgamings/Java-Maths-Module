@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
 
 public class Polynomial
 {
@@ -163,6 +161,7 @@ public class Polynomial
     }
 
     public static void main(String[] args) {
-
+        Polynomial p = new Polynomial(new double[] {1, 2, 3, 4});
+        System.out.println(p);
     }
 }

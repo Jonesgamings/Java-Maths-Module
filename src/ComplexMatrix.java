@@ -1,3 +1,5 @@
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 
 public class ComplexMatrix{
@@ -11,6 +13,21 @@ public class ComplexMatrix{
         this.columns = columns;
         this.matrix = new ComplexNumber[rows][columns];
         this.setZero();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ComplexMatrix that = (ComplexMatrix) o;
+        return rows == that.rows && columns == that.columns && Arrays.deepEquals(matrix, that.matrix);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(rows, columns);
+        result = 31 * result + Arrays.deepHashCode(matrix);
+        return result;
     }
 
     public ComplexNumber[][] getMatrix() {
@@ -178,7 +195,6 @@ public class ComplexMatrix{
         }
         return newComplexMatrix;
     }
-
     public ComplexNumber determinate()
     {
         if (columns != rows){ return ComplexNumber.NaN;}
@@ -296,6 +312,7 @@ public class ComplexMatrix{
     }
     public static void main(String[] args){
         ComplexMatrix m = ComplexMatrix.identity(4);
-        System.out.println(m.inverse());
+        m.setAt(0, 0, new ComplexNumber(0, 1));
+        System.out.println(m.determinate());
     }
 }

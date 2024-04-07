@@ -10,7 +10,7 @@ public class Function {
     Node ASTree;
     Interpreter interpreter;
     String variableName;
-    static final double deltaX = Math.pow(10, -10);
+    static final double deltaX = Math.pow(10, -3);
     static final double segments = Math.pow(10, 4);
     static final double iterations = Math.pow(10, 4);
 
@@ -86,7 +86,17 @@ public class Function {
         return this.interpreter.calculateValue();
     }
 
-    public double derivative(double position)
+    public double numericalDerivative(int n, double position)
+    {
+        double total = 0;
+        for (int i =0; i < n+1; i++)
+        {
+            total += Math.pow(-1, n + i) * (Polynomial.Factorial(n) / (Polynomial.Factorial(i) * Polynomial.Factorial(n-i))) * this.getAt(position + i * Function.deltaX);
+        }
+        return (1 / Math.pow(deltaX, n)) *total;
+    }
+
+    public double numericalDerivative(double position)
     {
         double startValue = this.getAt(position);
         double endValue = this.getAt(position + deltaX);
@@ -192,7 +202,7 @@ public class Function {
         double lastX = start;
         for (int i = 0; i < iterations; i++)
         {
-            lastX = lastX - (this.getAt(lastX) / this.derivative(lastX));
+            lastX = lastX - (this.getAt(lastX) / this.numericalDerivative(lastX));
         }
         return lastX;
     }
@@ -202,14 +212,13 @@ public class Function {
         double lastX = start;
         for (int i = 0; i < iterations; i++)
         {
-            lastX = lastX - (this.getAt(lastX) / this.derivative(lastX));
+            lastX = lastX - (this.getAt(lastX) / this.numericalDerivative(lastX));
         }
         return lastX;
     }
 
     public static void main(String[] args) {
-        Function function = new Function("x^2").setVariableName("x");
-        Polynomial p = function.taylorSeries(100);
-        System.out.println(p.atX(new Matrix(2, 2).setMatrix(new double[][] {{1 , 0}, {0, 1}})));
+        Function function = new Function("e-e^(cos(x))").setVariableName("x");
+        System.out.println(function.taylorSeries(20));
     }
 }

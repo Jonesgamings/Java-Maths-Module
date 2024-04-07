@@ -1,4 +1,5 @@
 import java.util.Map;
+import java.util.Objects;
 
 public class ComplexNumber
 {
@@ -18,10 +19,24 @@ public class ComplexNumber
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ComplexNumber that = (ComplexNumber) o;
+        return Double.compare(real, that.real) == 0 && Double.compare(imaginary, that.imaginary) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(real, imaginary);
+    }
+
+    @Override
     public String toString() {
-        if (this.imaginary > 0) {return this.real + " + " + this.imaginary + "i";}
-        else if (this.imaginary == 0) {return this.real + "";}
-        else {return this.real + " " + this.imaginary + "i";}
+        if (this.imaginary == 0) {return this.real + "";}
+        else if (this.real == 0) {return this.imaginary + "i";}
+        else if (this.imaginary > 0) {return this.real + " + " + this.imaginary + "i";}
+        else {return this.real + " - " + Math.abs(this.imaginary) + "i";}
     }
 
     public ComplexNumber conjugate()
@@ -48,12 +63,12 @@ public class ComplexNumber
         return new ComplexNumber(this.real * number.real - this.imaginary * number.imaginary, this.real * number.imaginary + this.imaginary * number.real);
     }
 
-    public Vector2D rotate(Vector2D vector)
+    public Vector2D transform(Vector2D vector)
     {
         return this.multiply(vector.toComplex()).toVector();
     }
 
-    public ComplexNumber rotate(ComplexNumber complexNumber)
+    public ComplexNumber transform(ComplexNumber complexNumber)
     {
         return this.multiply(complexNumber);
     }
@@ -115,6 +130,11 @@ public class ComplexNumber
     public Vector2D toVector()
     {
         return new Vector2D(this.real, this.imaginary);
+    }
+
+    public Matrix toMatrix()
+    {
+        return Matrix.rotation2D(this.normalise().angle());
     }
 
     public static void main(String[] args) {

@@ -1,3 +1,5 @@
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 
 public class Matrix {
@@ -291,6 +293,21 @@ public class Matrix {
         matrixString.deleteCharAt(length-1);
         matrixString.append("}");
         return  matrixString.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Matrix matrix1 = (Matrix) o;
+        return rows == matrix1.rows && columns == matrix1.columns && Arrays.deepEquals(matrix, matrix1.matrix);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(rows, columns);
+        result = 31 * result + Arrays.deepHashCode(matrix);
+        return result;
     }
 
     public ComplexMatrix toComplex()

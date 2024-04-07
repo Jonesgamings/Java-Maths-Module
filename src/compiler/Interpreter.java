@@ -333,6 +333,13 @@ public class Interpreter
             case TokenTypes.MULTIPLY: {return new BinOpNode(new BinOpNode(left, new Token(TokenTypes.MULTIPLY), this.derivativeNode(right)) , new Token(TokenTypes.PLUS), new BinOpNode(right, new Token(TokenTypes.MULTIPLY), this.derivativeNode(left)));}
             case TokenTypes.POW:
             {
+                if (left.getClass() == NumberNode.class) {
+                    NumberNode leftN = (NumberNode) left;
+                    if (leftN.numberToken.value == Math.E)
+                    {
+                        return new BinOpNode(this.derivativeNode(right), new Token(TokenTypes.MULTIPLY), node);
+                    }
+                }
                 Node a = new BinOpNode(left, new Token(TokenTypes.POW), new BinOpNode(right, new Token(TokenTypes.MINUS), new NumberNode(new Token(TokenTypes.NUMBER, 1))));
                 Node LEFT = new BinOpNode(right, new Token(TokenTypes.MULTIPLY), new BinOpNode(a, new Token(TokenTypes.MULTIPLY), this.derivativeNode(left)));
                 Node c = new BinOpNode(left, new Token(TokenTypes.POW), right);
@@ -475,7 +482,7 @@ public class Interpreter
 
     public static void main(String[] args) {
         double startTime = System.nanoTime();
-        Lexer l = new Lexer("sin(x)");
+        Lexer l = new Lexer("sin(x^2)");
         Parser p = new Parser(l.createTokens());
         Interpreter i = new Interpreter(p.parse());
         Interpreter i2 = new Interpreter(i.derivative());

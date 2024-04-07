@@ -1,8 +1,7 @@
-- Allow Sum and Product notation
 - Simpsons Rule?
-- Possible nth differentiation (and maybe partial)
+- Make Derivative more efficient / Make simplify work better
 
 - Matrix Eigenvalues and Eigenvectors
-- Add more taylor series
-- Matrix rotations on Vectors
+- Add more taylor series (kinda done?)
 - Matrix to Quaternion
+- Make sure Complex Matrix is same as Matrix (Maybe need to add complex Vectors)

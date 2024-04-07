@@ -10,7 +10,6 @@ public class CylindricalCoordinate
         this.height = height;
         this.angle = angle;
     }
-
     public Vector3D toVector()
     {
         return new Vector3D(Math.cos(this.angle) * radius, Math.sin(this.angle) * radius, this.height);

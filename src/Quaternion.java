@@ -96,13 +96,13 @@ public class Quaternion
         return this.a;
     }
 
-    public Vector3D rotate(Vector3D vector)
+    public Vector3D transform(Vector3D vector)
     {
         Quaternion qVector = vector.toQuaternion();
         return (this.multiply(qVector)).multiply(this.conjugate()).imaginary();
     }
 
-    public Quaternion rotate(Quaternion quaternion)
+    public Quaternion transform(Quaternion quaternion)
     {
         return (this.multiply(quaternion)).multiply(this.conjugate());
     }
@@ -148,7 +148,7 @@ public class Quaternion
         double t3 = +2.0 * (a * k + i * j);
         double t4 = +1.0 - 2.0 * (j * j + k * k);
 
-        return new Vector3D(Math.atan2(t0, t1), Math.asin(t2), Math.atan2(t3, t4)); //roll, pitch yaw
+        return new Vector3D(Math.atan2(t0, t1), Math.asin(t2), Math.atan2(t3, t4)); //roll, pitch, yaw
     }
 
     public static Quaternion rotation(Vector3D n, double angle)
@@ -156,5 +156,10 @@ public class Quaternion
         double a = Math.cos(angle/2);
         Vector3D ijkVector = n.normalise().multiply(Math.sin(angle/2));
         return new Quaternion(a, ijkVector);
+    }
+
+    public static void main(String[] args) {
+        Quaternion q = new Quaternion(1, 1, 1);
+        System.out.println(q.toEulerAngles());
     }
 }

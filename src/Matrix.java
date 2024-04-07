@@ -147,7 +147,32 @@ public class Matrix {
         return null;
     }
 
-    // to Quaternion
+    public Quaternion toQuaternion()
+    {
+        if (this.columns != this.rows) {return null;}
+        if (this.columns != 3) {return null;}
+        double trace = this.trace();
+        if (trace > 0)
+        {
+            double k = 0.f / Math.sqrt(1 + trace);
+            return new Quaternion(k * (getAt(1, 2) - getAt(2, 1)), k * (getAt(2, 0) - getAt(0, 2)), k * getAt(0, 1) - getAt(1, 0), 0.25 / k);
+        }
+        else if (getAt(0,0) > getAt(1, 1) && getAt(0 , 0) > getAt(2, 2))
+        {
+            double k = 0.5 / Math.sqrt(1 + getAt(0, 0) - getAt(1,1) - getAt(2,2));
+            return new Quaternion(0.25 / k, k * (getAt(1,0) + getAt(0, 1)), k * (getAt(2, 0) + getAt(0, 2)), k * (getAt(1, 2) - getAt(2, 1)));
+        }
+        else if (getAt(1, 1) > getAt(2, 2))
+        {
+            double k = 0.5 / Math.sqrt(1 + getAt(1, 1) - getAt(0, 0) - getAt(2, 2));
+            return new Quaternion(k * (getAt(1, 0) + getAt(0, 1)), 0.25 / k, k * (getAt(2, 1) + getAt(1, 2)), k * (getAt(2, 0) - getAt(0, 2)));
+        }
+        else
+        {
+           double k = 0.5 / Math.sqrt(1 + getAt(2, 2) - getAt(0,0) - getAt(1, 1));
+           return new Quaternion(k * (getAt(2, 0) + getAt(0, 2)), k * (getAt(2, 1) + getAt(1, 2)), 0.25 / k, k * (getAt(0, 1) - getAt(1, 0)));
+        }
+    }
 
     public static Matrix rotationX(double angle)
     {
@@ -260,10 +285,41 @@ public class Matrix {
         return newMatrix;
     }
 
-    public double eigenvalues()
+    public ComplexNumber[] eigenValues()
     {
-        if (columns != rows) {return 0;}
-        return 0;
+        if (columns != rows) {return null;}
+        if (columns == 2)
+        {
+            return new Polynomial(new double[] {1, this.trace(), this.determinate()}).roots();
+        }
+        else if (columns == 3)
+        {
+
+        }
+        else if (columns ==4)
+        {
+
+        }
+        return null;
+    }
+
+    public ComplexMatrix orthogonalMatrix()
+    {
+        if (columns != rows) {return null;}
+        if (columns == 2)
+        {
+            ComplexNumber[] eigenValues = eigenValues();
+            return new ComplexMatrix(2, 2).setMatrix(new ComplexNumber[][]{{eigenValues[0], new ComplexNumber(0, 0)}, {new ComplexNumber(0 ,0), eigenValues[1]}});
+        }
+        else if (columns == 3)
+        {
+
+        }
+        else if (columns ==4)
+        {
+
+        }
+        return null;
     }
 
     public Matrix power(int pow)
@@ -322,10 +378,9 @@ public class Matrix {
     }
 
     public static void main(String[] args){
-        Matrix m1 = new Matrix(2, 2).random_values(1, 10);
-        Matrix m2 = new Matrix(2, 2).random_values(1, 10);
-        System.out.println(m1);
-        System.out.println(m2);
-        System.out.println(m1.multiply(m2));
+        Matrix m = new Matrix(2, 2).random_values(1, 10);
+        System.out.println(m);
+        System.out.println(Arrays.toString(m.eigenValues()));
+        System.out.println(m.orthogonalMatrix());
     }
 }

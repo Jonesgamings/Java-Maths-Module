@@ -31,6 +31,11 @@ public class ComplexNumber
         return Objects.hash(real, imaginary);
     }
 
+    public boolean isReal()
+    {
+        return this.imaginary == 0;
+    }
+
     @Override
     public String toString() {
         if (this.imaginary == 0) {return this.real + "";}

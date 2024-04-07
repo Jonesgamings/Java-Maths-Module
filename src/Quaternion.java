@@ -159,7 +159,7 @@ public class Quaternion
     }
 
     public static void main(String[] args) {
-        Quaternion q = new Quaternion(1, 1, 1);
-        System.out.println(q.toEulerAngles());
+        Quaternion q = Quaternion.rotation(new Vector3D(0, 0, 1), Math.PI/2);
+        System.out.println(q.transform(new Vector3D(0,2 ,3)));
     }
 }

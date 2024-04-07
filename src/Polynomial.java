@@ -132,9 +132,29 @@ public class Polynomial
         return  integral.atX(upper) - integral.atX(lower);
     }
 
-    public double[] roots()
+    public ComplexNumber[] roots()
     {
-        return new double[this.degree];
+        if (degree == 2)
+        {
+            return Polynomial.quadraticFormula(this);
+        }
+        return null;
+    }
+
+    public static ComplexNumber[] quadraticFormula(Polynomial polynomial)
+    {
+        if (polynomial.degree != 2) {return null;}
+        double a = polynomial.coefficients[0];
+        double b = polynomial.coefficients[1];
+        double c = polynomial.coefficients[2];
+        double discriminant = Math.sqrt(Math.pow(b, 2) - 4 * a * c);
+        if (discriminant >= 0) {
+            return new ComplexNumber[]{new ComplexNumber((-b + discriminant) / (2 * a), 0), new ComplexNumber((-b - discriminant) / (2 * a), 0)};
+        }
+        else
+        {
+            return new ComplexNumber[]{new ComplexNumber(-b/(2*a),Math.sqrt(Math.abs(discriminant))/(2*a)), new ComplexNumber(-b/(2*a),-Math.sqrt(Math.abs(discriminant))/(2*a))};
+        }
     }
 
     public static double Factorial(int n)

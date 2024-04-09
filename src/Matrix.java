@@ -303,25 +303,6 @@ public class Matrix {
         return null;
     }
 
-    public ComplexMatrix orthogonalMatrix()
-    {
-        if (columns != rows) {return null;}
-        if (columns == 2)
-        {
-            ComplexNumber[] eigenValues = eigenValues();
-            return new ComplexMatrix(2, 2).setMatrix(new ComplexNumber[][]{{eigenValues[0], new ComplexNumber(0, 0)}, {new ComplexNumber(0 ,0), eigenValues[1]}});
-        }
-        else if (columns == 3)
-        {
-
-        }
-        else if (columns ==4)
-        {
-
-        }
-        return null;
-    }
-
     public Matrix power(int pow)
     {
         Matrix newMatrix = this;
@@ -381,6 +362,5 @@ public class Matrix {
         Matrix m = new Matrix(2, 2).random_values(1, 10);
         System.out.println(m);
         System.out.println(Arrays.toString(m.eigenValues()));
-        System.out.println(m.orthogonalMatrix());
     }
 }

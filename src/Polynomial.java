@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Polynomial
 {
@@ -76,17 +77,6 @@ public class Polynomial
         return new Polynomial(new double[] {gradient, point.y - gradient*point.x});
     }
 
-    private static int Product(int n, int starting)
-    {
-        int total = 1;
-        for (int current=0; current < n; current++)
-        {
-            if (starting - current == 0) {break;}
-            total *= (starting - current);
-        }
-        return total;
-    }
-
     public Polynomial differentiate(int n)
     {
         double[] newCoefficients = new double[this.degree-n+1];
@@ -157,6 +147,11 @@ public class Polynomial
         }
     }
 
+    public Polynomial multiply(Polynomial polynomial)
+    {
+        return new Polynomial(Polynomial.Convolution(this.coefficients, polynomial.coefficients));
+    }
+
     public static double Factorial(int n)
     {
         if (n < 0) {return Double.NaN;}
@@ -167,6 +162,40 @@ public class Polynomial
             total *= i;
         }
         return total;
+    }
+
+    private static int Product(int n, int starting)
+    {
+        int total = 1;
+        for (int current=0; current < n; current++)
+        {
+            if (starting - current == 0) {break;}
+            total *= (starting - current);
+        }
+        return total;
+    }
+
+    public static double[] Convolution(double array1[], double[] array2)
+    {
+        double[] newArray = new double[array1.length + array2.length-1];
+        for (int i =0; i < newArray.length; i++)
+        {
+            double total = 0;
+            for (int j =0;j < Math.max(array1.length, array2.length); j++)
+            {
+                double first;
+                double second;
+                if (i - j < 0 || i - j >= array1.length) {first = 0;}
+                else {first  = array1[i - j];}
+
+                if (j >= array2.length) {second = 0;}
+                else {second = array2[j];}
+
+                total += first * second;
+            }
+            newArray[i] = total;
+        }
+        return newArray;
     }
 
     public static Polynomial NtoX(double n, int accuracy)
@@ -181,7 +210,5 @@ public class Polynomial
     }
 
     public static void main(String[] args) {
-        Polynomial p = new Polynomial(new double[] {1, 2, 3, 4});
-        System.out.println(p);
     }
 }

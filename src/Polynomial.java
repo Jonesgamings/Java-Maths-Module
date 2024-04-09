@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Objects;
 
 public class Polynomial
 {
@@ -131,6 +131,88 @@ public class Polynomial
         return null;
     }
 
+    public Polynomial divide(Polynomial p)
+    {
+        if (p.degree != 1) {return null;}
+        double lastSum = this.coefficients[0];
+        double root = -p.coefficients[1] / p.coefficients[0];
+        ArrayList<Double> newCoefficients = new ArrayList<>();
+        for (int i = 1; i < this.coefficients.length; i++)
+        {
+            newCoefficients.add(lastSum);
+            lastSum = (lastSum * root) + this.coefficients[i];
+        }
+        newCoefficients.add(lastSum);
+        if (lastSum == 0)
+        {
+            newCoefficients.removeLast();
+            return new Polynomial(newCoefficients.stream().mapToDouble(i -> i).toArray());
+        }
+        return null;
+    }
+
+    public Polynomial divide(double root)
+    {
+        double lastSum = this.coefficients[0];
+        ArrayList<Double> newCoefficients = new ArrayList<>();
+        for (int i = 1; i < this.coefficients.length; i++)
+        {
+            newCoefficients.add(lastSum);
+            lastSum = (lastSum * root) + this.coefficients[i];
+        }
+        newCoefficients.add(lastSum);
+        if (lastSum == 0)
+        {
+            newCoefficients.removeLast();
+            return new Polynomial(newCoefficients.stream().mapToDouble(i -> i).toArray());
+        }
+        return null;
+    }
+
+    public Polynomial divide(ComplexNumber root)
+    {
+        ComplexNumber lastSum = new ComplexNumber(this.coefficients[0], 0);
+        ArrayList<ComplexNumber> newCoefficients = new ArrayList<>();
+        for (int i = 1; i < this.coefficients.length; i++)
+        {
+            newCoefficients.add(lastSum);
+            lastSum = (root.multiply(lastSum)).add(this.coefficients[i]);
+        }
+        newCoefficients.add(lastSum);
+        if (Objects.equals(lastSum, new ComplexNumber(0, 0)));
+        {
+            newCoefficients.removeLast();
+            double[] newCoefficientsArray = new double[newCoefficients.size()];
+            for (int j = 0; j < newCoefficients.size(); j++)
+            {
+                newCoefficientsArray[j] = newCoefficients.get(j).real;
+            }
+        }
+        return null;
+    }
+
+    public boolean checkRoot(double root)
+    {
+        double lastSum = this.coefficients[0];
+        for (int i = 1; i < this.coefficients.length; i++)
+        {
+            lastSum = (lastSum * root) + this.coefficients[i];
+        }
+        return lastSum == 0;
+    }
+
+    public boolean checkRoot(ComplexNumber root)
+    {
+        {
+            ComplexNumber lastSum = new ComplexNumber(this.coefficients[0], 0);
+            for (int i = 1; i < this.coefficients.length; i++)
+            {
+                lastSum = (root.multiply(lastSum)).add(this.coefficients[i]);
+            }
+            return Objects.equals(lastSum, new ComplexNumber(0, 0));
+        }
+    }
+
     public static ComplexNumber[] quadraticFormula(Polynomial polynomial)
     {
         if (polynomial.degree != 2) {return null;}
@@ -210,5 +292,10 @@ public class Polynomial
     }
 
     public static void main(String[] args) {
+        Polynomial p = new Polynomial(new double[] {1, 4, 3, 2, 1, -1});
+        Polynomial p2 = new Polynomial(new double[] {1, 1});
+        System.out.println(p);
+        System.out.println(p2);
+        System.out.println(p.divide(p2));
     }
 }

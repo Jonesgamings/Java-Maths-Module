@@ -202,7 +202,7 @@ public class Function {
         double lastX = start;
         for (int i = 0; i < iterations; i++)
         {
-            lastX = lastX - (this.getAt(lastX) / this.numericalDerivative(lastX));
+            lastX = lastX - (this.getAt(lastX) / this.derivative().getAt(lastX));
         }
         return lastX;
     }
@@ -212,7 +212,7 @@ public class Function {
         double lastX = start;
         for (int i = 0; i < iterations; i++)
         {
-            lastX = lastX - (this.getAt(lastX) / this.numericalDerivative(lastX));
+            lastX = lastX - (this.getAt(lastX) / this.derivative().getAt(lastX));
         }
         return lastX;
     }

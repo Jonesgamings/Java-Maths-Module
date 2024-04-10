@@ -129,7 +129,7 @@ public class ComplexNumber
     {
         Polynomial eX = Polynomial.NtoX(Math.E, 200);
         ComplexNumber newComplex = power.multiply(new ComplexNumber(Math.log(this.magnitude()), this.angle()));
-        return eX.atX(newComplex);
+        return eX.getAt(newComplex);
     }
 
     public Vector2D toVector()

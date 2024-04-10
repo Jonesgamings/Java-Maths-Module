@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Polynomial
@@ -25,7 +26,7 @@ public class Polynomial
         return polyString.toString();
     }
 
-    public ComplexMatrix atX(ComplexMatrix x)
+    public ComplexMatrix getAt(ComplexMatrix x)
     {
         ComplexMatrix total = new ComplexMatrix(x.rows, x.columns);
         for (int i=0; i < this.degree+1; i++) {
@@ -34,7 +35,7 @@ public class Polynomial
         return total;
     }
 
-    public Matrix atX(Matrix x)
+    public Matrix getAt(Matrix x)
     {
         Matrix total = new Matrix(x.rows, x.columns);
         for (int i=0; i < this.degree+1; i++) {
@@ -43,7 +44,7 @@ public class Polynomial
         return total;
     }
 
-    public ComplexNumber atX(ComplexNumber x)
+    public ComplexNumber getAt(ComplexNumber x)
     {
         ComplexNumber total = new ComplexNumber(0, 0);
         for (int i=0; i < this.degree+1; i++) {
@@ -52,7 +53,7 @@ public class Polynomial
         return total;
     }
 
-    public double atX(double x)
+    public double getAt(double x)
     {
         double total = 0;
         for (int i=0; i < this.degree+1; i++) {
@@ -77,7 +78,7 @@ public class Polynomial
         return new Polynomial(new double[] {gradient, point.y - gradient*point.x});
     }
 
-    public Polynomial differentiate(int n)
+    public Polynomial derivative(int n)
     {
         double[] newCoefficients = new double[this.degree-n+1];
         for (int i=0; i < this.degree-n+1; i++)
@@ -91,15 +92,15 @@ public class Polynomial
 
     public Polynomial tangent(double x)
     {
-        double y = atX(x);
-        double gradient = differentiate(1).atX(x);
+        double y = getAt(x);
+        double gradient = derivative(1).getAt(x);
         return Polynomial.straightLine(gradient, new Vector2D(x, y));
     }
 
     public Polynomial normal(double x)
     {
-        double y = atX(x);
-        double gradient = -1/differentiate(1).atX(x);
+        double y = getAt(x);
+        double gradient = -1/derivative(1).getAt(x);
         return Polynomial.straightLine(gradient, new Vector2D(x, y));
     }
 
@@ -119,7 +120,49 @@ public class Polynomial
     public double definiteIntegral(double lower, double upper)
     {
         Polynomial integral = this.indefiniteIntegral(0);
-        return  integral.atX(upper) - integral.atX(lower);
+        return  integral.getAt(upper) - integral.getAt(lower);
+    }
+
+    public double newtonRaphson(double start, int iterations)
+    {
+        double lastX = start;
+        for (int i = 0; i < iterations; i++)
+        {
+            lastX = lastX - (this.getAt(lastX) / this.derivative(1).getAt(lastX));
+        }
+        return lastX;
+    }
+
+    public double newtonRaphson(double start)
+    {
+        double lastX = start;
+        for (int i = 0; i < Function.iterations; i++)
+        {
+            lastX = lastX - (this.getAt(lastX) / this.derivative(1).getAt(lastX));
+        }
+        return lastX;
+    }
+
+    public double[] findRoot(double min, double max)
+    {
+        double last = 0;
+        double[] roots = new double[this.degree];
+        int lastIndex = -1;
+        for (double i = min; i < max+1; i++)
+        {
+            if ((last < 0 && this.getAt(i) > 0) || (last > 0 && this.getAt(i) < 0))
+            {
+                roots[lastIndex+1] = newtonRaphson(i);
+                lastIndex++;
+            }
+            else if (this.getAt(i) == 0)
+            {
+                roots[lastIndex + 1] = i;
+                lastIndex++;
+            }
+            last = getAt(i);
+        }
+        return roots;
     }
 
     public ComplexNumber[] roots()
@@ -292,10 +335,8 @@ public class Polynomial
     }
 
     public static void main(String[] args) {
-        Polynomial p = new Polynomial(new double[] {1, 4, 3, 2, 1, -1});
-        Polynomial p2 = new Polynomial(new double[] {1, 1});
+        Polynomial p = new Polynomial(new double[] {1, 4, 3, 2, -1, -1});
         System.out.println(p);
-        System.out.println(p2);
-        System.out.println(p.divide(p2));
+        System.out.println(Arrays.toString(p.findRoot(-100, 100)));
     }
 }

@@ -485,8 +485,6 @@ public class Interpreter
         Lexer l = new Lexer("sin(x^2)");
         Parser p = new Parser(l.createTokens());
         Interpreter i = new Interpreter(p.parse());
-        Interpreter i2 = new Interpreter(i.derivative());
-        i2.setVariable("x", 1);
-        System.out.println(i2);
+        System.out.println(new Interpreter(new Interpreter(i.derivative()).derivative()));
     }
 }

@@ -20,9 +20,17 @@ public class Polynomial
         for (int i=0; i <= this.degree; i++)
         {
             double coefficient = this.coefficients[i];
-            polyString.append(coefficient);
-            if (this.degree-i == 1) {polyString.append("x + ");}
-            else{if (this.degree-i != 0) {polyString.append("x^").append(this.degree - i).append(" + ");}}}
+            if (coefficient != 0) {
+                polyString.append(coefficient);
+                if (this.degree - i == 1) {
+                    polyString.append("x + ");
+                } else {
+                    if (this.degree - i != 0) {
+                        polyString.append("x^").append(this.degree - i).append(" + ");
+                    }
+                }
+            }
+        }
         return polyString.toString();
     }
 
@@ -143,23 +151,70 @@ public class Polynomial
         return lastX;
     }
 
-    public double[] findRoot(double min, double max)
+    public ComplexNumber newtonRaphson(ComplexNumber start, int iterations)
+    {
+        ComplexNumber lastX = start;
+        for (int i = 0; i < iterations; i++)
+        {
+            lastX = lastX.subtract(this.getAt(lastX).divide(this.derivative(1).getAt(lastX)));
+        }
+        return lastX;
+    }
+
+    public ComplexNumber newtonRaphson(ComplexNumber start)
+    {
+        ComplexNumber lastX = start;
+        for (int i = 0; i < Function.iterations; i++)
+        {
+            lastX = lastX.subtract(this.getAt(lastX).divide(this.derivative(1).getAt(lastX)));
+        }
+        return lastX;
+    }
+
+    public ComplexNumber[] findComplexRoot(ComplexNumber min, ComplexNumber max)
+    {
+        ComplexNumber last;
+        ComplexNumber[] roots = new ComplexNumber[this.degree];
+        int lastIndex = -1;
+        for (double r = min.real; r < max.real+1; r++) {
+            last = new ComplexNumber(0 ,0);
+            for (double i = min.imaginary; i < max.imaginary+1; i++) {
+                System.out.println(this.getAt(new ComplexNumber(r, i)) + " <- " + new ComplexNumber(r, i));
+                if (lastIndex + 1 >= this.degree) {
+                    break;
+                }
+                if (this.getAt(new ComplexNumber(r, i)).real == 0) {
+                    roots[lastIndex + 1] = new ComplexNumber(r, i);
+                    lastIndex++;
+                }
+                else if (((last.real < 0 && this.getAt(new ComplexNumber(r, i).real) > 0) || (last.real > 0 && this.getAt(new ComplexNumber(r, i)).real < 0)) && last.imaginary/this.getAt(new ComplexNumber(r, i)).imaginary >= 0) {
+                    roots[lastIndex + 1] = newtonRaphson(new ComplexNumber(r, i));
+                    lastIndex++;
+
+                }
+                last = getAt(new ComplexNumber(r, i));
+            }
+        }
+        return roots;
+    }
+
+    public double[] findRealRoot(double min, double max)
     {
         double last = 0;
         double[] roots = new double[this.degree];
         int lastIndex = -1;
-        for (double i = min; i < max+1; i++)
+        for (double i = min; i < max; i++)
         {
+            if (lastIndex+1 >= this.degree) {break;}
             if ((last < 0 && this.getAt(i) > 0) || (last > 0 && this.getAt(i) < 0))
             {
                 roots[lastIndex+1] = newtonRaphson(i);
-                lastIndex++;
             }
             else if (this.getAt(i) == 0)
             {
                 roots[lastIndex + 1] = i;
-                lastIndex++;
             }
+            lastIndex++;
             last = getAt(i);
         }
         return roots;
@@ -222,7 +277,7 @@ public class Polynomial
             lastSum = (root.multiply(lastSum)).add(this.coefficients[i]);
         }
         newCoefficients.add(lastSum);
-        if (Objects.equals(lastSum, new ComplexNumber(0, 0)));
+        if (Objects.equals(lastSum, new ComplexNumber(0, 0)))
         {
             newCoefficients.removeLast();
             double[] newCoefficientsArray = new double[newCoefficients.size()];
@@ -230,6 +285,7 @@ public class Polynomial
             {
                 newCoefficientsArray[j] = newCoefficients.get(j).real;
             }
+            return new Polynomial(newCoefficientsArray);
         }
         return null;
     }
@@ -335,8 +391,8 @@ public class Polynomial
     }
 
     public static void main(String[] args) {
-        Polynomial p = new Polynomial(new double[] {1, 4, 3, 2, -1, -1});
+        Polynomial p = new Polynomial(new double[] {1, -1, -3, 5});
         System.out.println(p);
-        System.out.println(Arrays.toString(p.findRoot(-100, 100)));
+        System.out.println(Arrays.toString(p.findComplexRoot(new ComplexNumber(-1, -1), new ComplexNumber(1, 1))));
     }
 }

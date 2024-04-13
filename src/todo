@@ -3,3 +3,5 @@
 
 - Matrix Eigenvalues and Eigenvectors
 - Add more taylor series (kinda done?)
+- Add log rules to simplification function
+- Add simplification to simplify functions (a * a = a^2)

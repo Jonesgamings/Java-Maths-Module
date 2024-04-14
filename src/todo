@@ -5,3 +5,5 @@
 - Add more taylor series (kinda done?)
 - Add log rules to simplification function
 - Add simplification to simplify functions (a * a = a^2)
+
+- Refactor code in either another language to allow operator overloading or Overhaul system to have a "CustomNumber" class which all maths data storage class implement from so they can all interact;

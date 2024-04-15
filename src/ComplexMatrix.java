@@ -174,11 +174,8 @@ public class ComplexMatrix{
     public static ComplexMatrix identity(int size)
     {
         ComplexMatrix identityComplexMatrix = new ComplexMatrix(size, size);
-        for (int row = 0; row < identityComplexMatrix.rows; row++) {
-            for (int column = 0; column < identityComplexMatrix.columns; column++) {
-                if (row != column) {continue;}
-                identityComplexMatrix.setAt(row, column, 1f);
-            }
+        for (int row = 0; row < size; row++) {
+            identityComplexMatrix.setAt(row, row, 1f);
         }
         return identityComplexMatrix;
     }
@@ -189,8 +186,9 @@ public class ComplexMatrix{
         for (int row = 0; row < this.rows; row++) {
             for (int column = 0; column < this.columns; column++) {
                 Random r = new Random();
-                double random = Math.round(min + (max - min) * r.nextDouble());
-                newComplexMatrix.setAt(row, column, random);
+                double randomR = Math.round(min + (max - min) * r.nextDouble());
+                double randomI = Math.round(min + (max - min) * r.nextDouble());
+                newComplexMatrix.setAt(row, column, new ComplexNumber(randomR, randomI));
             }
         }
         return newComplexMatrix;
@@ -311,8 +309,8 @@ public class ComplexMatrix{
         return  matrixString.toString();
     }
     public static void main(String[] args){
-        ComplexMatrix m = ComplexMatrix.identity(4);
-        m.setAt(0, 0, new ComplexNumber(0, 1));
+        ComplexMatrix m = ComplexMatrix.identity(5);
+        System.out.println(m);
         System.out.println(m.determinate());
     }
 }

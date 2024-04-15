@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Random;
 
 public class Polynomial
 {
@@ -391,8 +392,13 @@ public class Polynomial
     }
 
     public static void main(String[] args) {
-        Polynomial p = new Polynomial(new double[] {1, -1, -3, 5});
+        ArrayList<Double> coef = new ArrayList<>();
+        for (int i = 0; i < 5; i++)
+        {
+            coef.add(new Random().nextDouble(-10, 10));
+        }
+        Polynomial p = new Polynomial(coef.stream().mapToDouble(i -> i).toArray());
         System.out.println(p);
-        System.out.println(Arrays.toString(p.findComplexRoot(new ComplexNumber(-1, -1), new ComplexNumber(1, 1))));
+        System.out.println(Arrays.toString(p.findRealRoot(-100, 100)));
     }
 }

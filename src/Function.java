@@ -257,7 +257,7 @@ public class Function {
     }
 
     public static void main(String[] args) {
-        Function function = new Function("e-e^(cos(x))").setVariableName("x");
-        System.out.println(function.taylorSeries(20));
+        Function function = new Function("x+sin(3)").setVariableName("x");
+        System.out.println(function.derivative(1));
     }
 }

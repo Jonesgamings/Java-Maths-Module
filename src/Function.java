@@ -54,6 +54,45 @@ public class Function {
         this.variableName = variableName;
     }
 
+    public double[] findRealRoot(double min, double max)
+    {
+        double last = 0;
+        ArrayList<Double> roots = new ArrayList<>();
+        for (double i = min; i < max; i++)
+        {
+            if ((last < 0 && this.getAt(i) > 0) || (last > 0 && this.getAt(i) < 0))
+            {
+                roots.add(newtonRaphson(i));
+            }
+            else if (this.getAt(i) == 0)
+            {
+                roots.add(i);
+            }
+            last = getAt(i);
+        }
+        return roots.stream().mapToDouble(i -> i).toArray();
+    }
+
+    public double newtonRaphson(double start, int iterations)
+    {
+        double lastX = start;
+        for (int i = 0; i < iterations; i++)
+        {
+            lastX = lastX - (this.getAt(lastX) / this.derivative(1).getAt(lastX));
+        }
+        return lastX;
+    }
+
+    public double newtonRaphson(double start)
+    {
+        double lastX = start;
+        for (int i = 0; i < Function.iterations; i++)
+        {
+            lastX = lastX - (this.getAt(lastX) / this.derivative(1).getAt(lastX));
+        }
+        return lastX;
+    }
+
     public Function setVariableName(String variableName)
     {
         this.variableName = variableName;

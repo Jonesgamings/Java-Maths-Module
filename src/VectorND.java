@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -162,6 +161,32 @@ public class VectorND
         return Math.sqrt(squaredSum);
     }
 
+    public Bivector wedgeProduct(VectorND vector)
+    {
+        return new Bivector(this, vector);
+    }
+
+    public Bivector exteriorProduct(VectorND vector)
+    {
+        return new Bivector(this, vector);
+    }
+
+    public VectorND hadamardProduct(VectorND v)
+    {
+        if (v.dimensions != this.dimensions) {return null;}
+        double[] values = new double[this.dimensions];
+        for (int i = 0; i < dimensions; i++)
+        {
+            values[i] = v.getValue(i) * this.getValue(i);
+        }
+        return new VectorND(values);
+    }
+
+    public Paravector geometricProduct(VectorND vector)
+    {
+        return new Paravector(this, vector);
+    }
+
     public VectorND normalise()
     {
         double magnitude = this.magnitude();
@@ -247,12 +272,14 @@ public class VectorND
     @Override
     public String toString() {
         StringBuilder vectorString = new StringBuilder();
+        vectorString.append("{");
         for (int i = 0; i < dimensions; i++)
         {
 
             vectorString.append(this.getValue(i));
             if (i != dimensions-1) {vectorString.append(", ");}
         }
+        vectorString.append("}");
         return  vectorString.toString();
     }
 

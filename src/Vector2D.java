@@ -8,6 +8,11 @@ public class Vector2D {
     }
 
     @Override
+    public String toString() {
+        return "{" + x + " , " + y + "}";
+    }
+
+    @Override
     public boolean equals(Object obj)
     {
         if (obj == null) {return false;}
@@ -87,6 +92,26 @@ public class Vector2D {
         return this.divide(Math.pow(this.magnitude(),2));
     }
 
+    public Bivector wedgeProduct(Vector2D vector)
+    {
+        return new Bivector(this, vector);
+    }
+
+    public Bivector exteriorProduct(Vector2D vector)
+    {
+        return new Bivector(this, vector);
+    }
+
+    public Paravector geometricProduct(Vector2D vector)
+    {
+        return new Paravector(this.toVectorND(), vector.toVectorND());
+    }
+
+    public Vector2D hadamardProduct(Vector2D v)
+    {
+        return new Vector2D(x * v.x, y * v.y);
+    }
+
     public VectorND toVectorND()
     {
         return new VectorND(new double[] {this.x, this.y});
@@ -104,5 +129,11 @@ public class Vector2D {
     public ComplexNumber toComplex()
     {
         return new ComplexNumber(x, y);
+    }
+
+    public static void main(String[] args) {
+        Vector2D v1 = new Vector2D(1, 1);
+        Vector2D v2 = new Vector2D(2, 2);
+        System.out.println(v1.geometricProduct(v2));
     }
 }

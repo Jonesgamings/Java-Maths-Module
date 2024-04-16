@@ -92,6 +92,36 @@ public class Vector3D
         return new Vector3D(newX, newY, newZ);
     }
 
+    public Vector3D project(Vector3D a)
+    {
+        return this.multiply((this.dot(a) / this.dot(this)));
+    }
+
+    public Vector3D reject(Vector3D a)
+    {
+        return a.subtract(this.project(a));
+    }
+
+    public static Vector3D projection(Vector3D a, Vector3D b)
+    {
+        return b.multiply((b.dot(a) / b.dot(b)));
+    }
+
+    public static Vector3D rejection(Vector3D a, Vector3D b)
+    {
+        return a.subtract(Vector3D.projection(a, b));
+    }
+
+    public static double scalarTripleProduct(Vector3D v1, Vector3D v2, Vector3D v3)
+    {
+        return v1.dot(v2.cross(v3));
+    }
+
+    public static Vector3D vectorTripleProduct(Vector3D v1, Vector3D v2, Vector3D v3)
+    {
+        return v1.cross(v2.cross(v3));
+    }
+
     public static Vector3D zeroes()
     {
         return new Vector3D(0, 0, 0);
@@ -125,5 +155,16 @@ public class Vector3D
     public Quaternion toQuaternion()
     {
         return new Quaternion(0, this);
+    }
+
+    public Vector3D inverse()
+    {
+        return this.divide(Math.pow(this.magnitude(),2));
+    }
+
+    public static void main(String[] args) {
+        Vector3D v = new Vector3D(1, 2,3);
+        Vector3D v2 = new Vector3D(2,1,2);
+        System.out.println(v.project(v2));
     }
 }

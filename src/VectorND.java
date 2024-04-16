@@ -26,6 +26,31 @@ public class VectorND
         this.dimensions = valuesList.size();
     }
 
+    public VectorND project(VectorND a)
+    {
+        return this.multiply((this.dot(a) / this.dot(this)));
+    }
+
+    public VectorND reject(VectorND a)
+    {
+        return a.subtract(this.project(a));
+    }
+
+    public static VectorND projection(VectorND a, VectorND b)
+    {
+        return b.multiply((b.dot(a) / b.dot(b)));
+    }
+
+    public static VectorND rejection(VectorND a, VectorND b)
+    {
+        return a.subtract(VectorND.projection(a, b));
+    }
+
+    public VectorND inverse()
+    {
+        return this.divide(Math.pow(this.magnitude(),2));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -149,6 +174,17 @@ public class VectorND
     }
 
     public double dot(VectorND vector)
+    {
+        if (vector.dimensions != this.dimensions) {return Double.NaN;}
+        double dotProduct = 0;
+        for (int i = 0; i < dimensions; i++)
+        {
+            dotProduct += values[i] + vector.getValue(i);
+        }
+        return dotProduct;
+    }
+
+    public double innerProduct(VectorND vector)
     {
         if (vector.dimensions != this.dimensions) {return Double.NaN;}
         double dotProduct = 0;

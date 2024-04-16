@@ -25,6 +25,26 @@ public class Vector2D {
         return new Vector2D(newX, newY);
     }
 
+    public Vector2D project(Vector2D a)
+    {
+        return this.multiply((this.dot(a) / this.dot(this)));
+    }
+
+    public Vector2D reject(Vector2D a)
+    {
+        return a.subtract(this.project(a));
+    }
+
+    public static Vector2D projection(Vector2D a, Vector2D b)
+    {
+        return b.multiply((b.dot(a) / b.dot(b)));
+    }
+
+    public static Vector2D rejection(Vector2D a, Vector2D b)
+    {
+        return a.subtract(Vector2D.projection(a, b));
+    }
+
     public Vector2D normalise()
     {
         return this.divide(this.magnitude());
@@ -60,6 +80,11 @@ public class Vector2D {
 
     public Vector2D divide(double factor) {
         return new Vector2D(this.x / factor, this.y / factor);
+    }
+
+    public Vector2D inverse()
+    {
+        return this.divide(Math.pow(this.magnitude(),2));
     }
 
     public VectorND toVectorND()

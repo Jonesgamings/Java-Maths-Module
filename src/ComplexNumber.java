@@ -68,6 +68,16 @@ public class ComplexNumber
         return new ComplexNumber(this.real * number.real - this.imaginary * number.imaginary, this.real * number.imaginary + this.imaginary * number.real);
     }
 
+    public static Vector2D rotate(Vector2D v, double angle)
+    {
+        return v.toComplex().multiply(new ComplexNumber(Math.cos(angle), Math.sin(angle))).toVector();
+    }
+
+    public static ComplexNumber rotate(ComplexNumber c, double angle)
+    {
+        return c.multiply(new ComplexNumber(Math.cos(angle), Math.sin(angle)));
+    }
+
     public Vector2D transform(Vector2D vector)
     {
         return this.multiply(vector.toComplex()).toVector();

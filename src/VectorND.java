@@ -161,14 +161,14 @@ public class VectorND
         return Math.sqrt(squaredSum);
     }
 
-    public Bivector wedgeProduct(VectorND vector)
+    public BiVector wedgeProduct(VectorND vector)
     {
-        return new Bivector(this, vector);
+        return new BiVector(this, vector);
     }
 
-    public Bivector exteriorProduct(VectorND vector)
+    public BiVector exteriorProduct(VectorND vector)
     {
-        return new Bivector(this, vector);
+        return new BiVector(this, vector);
     }
 
     public VectorND hadamardProduct(VectorND v)
@@ -182,9 +182,9 @@ public class VectorND
         return new VectorND(values);
     }
 
-    public Paravector geometricProduct(VectorND vector)
+    public ParaVector geometricProduct(VectorND vector)
     {
-        return new Paravector(this, vector);
+        return new ParaVector(this, vector);
     }
 
     public VectorND normalise()
@@ -207,6 +207,16 @@ public class VectorND
             dotProduct += values[i] + vector.getValue(i);
         }
         return dotProduct;
+    }
+
+    public Matrix outerProduct(VectorND v)
+    {
+        return this.toMatrix().multiply(v.toMatrix().transpose());
+    }
+
+    public double angle(VectorND vector)
+    {
+        return Math.acos(this.dot(vector) / (this.magnitude() * vector.magnitude()));
     }
 
     public double innerProduct(VectorND vector)

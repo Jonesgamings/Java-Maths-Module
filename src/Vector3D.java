@@ -102,14 +102,14 @@ public class Vector3D
         return a.subtract(this.project(a));
     }
 
-    public Bivector wedgeProduct(Vector3D vector)
+    public BiVector wedgeProduct(Vector3D vector)
     {
-        return new Bivector(this, vector);
+        return new BiVector(this, vector);
     }
 
-    public Bivector exteriorProduct(Vector3D vector)
+    public BiVector exteriorProduct(Vector3D vector)
     {
-        return new Bivector(this, vector);
+        return new BiVector(this, vector);
     }
 
     public Vector3D hadamardProduct(Vector3D v)
@@ -117,9 +117,9 @@ public class Vector3D
         return new Vector3D(x * v.x, y * v.y, z * v.z);
     }
 
-    public Paravector geometricProduct(Vector3D vector)
+    public ParaVector geometricProduct(Vector3D vector)
     {
-        return new Paravector(this.toVectorND(), vector.toVectorND());
+        return new ParaVector(this.toVectorND(), vector.toVectorND());
     }
 
     public static Vector3D projection(Vector3D a, Vector3D b)
@@ -180,6 +180,26 @@ public class Vector3D
     public Vector3D inverse()
     {
         return this.divide(Math.pow(this.magnitude(),2));
+    }
+
+    public Matrix outerProduct(Vector3D v)
+    {
+        return this.toMatrix().multiply(v.toMatrix().transpose());
+    }
+
+    public static Vector3D xAxis()
+    {
+        return new Vector3D(1, 0, 0);
+    }
+
+    public static Vector3D YAxis()
+    {
+        return new Vector3D(0, 1, 0);
+    }
+
+    public static Vector3D ZAxis()
+    {
+        return new Vector3D(0, 0, 1);
     }
 
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-public class Bivector
+public class BiVector
 {
     private static final String wedgeProduct = "∧";
     // Wedge product of two vectors
@@ -10,19 +10,24 @@ public class Bivector
         return vector1 + wedgeProduct + vector2;
     }
 
-    public Bivector(VectorND v1, VectorND v2)
+    public double magnitude()
+    {
+        return vector1.magnitude() * vector2.magnitude() * Math.sin(vector1.angle(vector2));
+    }
+
+    public BiVector(VectorND v1, VectorND v2)
     {
         this.vector1 = v1;
         this.vector2 = v2;
     }
 
-    public Bivector(Vector3D v1, Vector3D v2)
+    public BiVector(Vector3D v1, Vector3D v2)
     {
         this.vector1 = v1.toVectorND();
         this.vector2 = v2.toVectorND();
     }
 
-    public Bivector(Vector2D v1, Vector2D v2)
+    public BiVector(Vector2D v1, Vector2D v2)
     {
         this.vector1 = v1.toVectorND();
         this.vector2 = v2.toVectorND();

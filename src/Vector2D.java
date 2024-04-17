@@ -92,19 +92,24 @@ public class Vector2D {
         return this.divide(Math.pow(this.magnitude(),2));
     }
 
-    public Bivector wedgeProduct(Vector2D vector)
+    public Matrix outerProduct(Vector2D v)
     {
-        return new Bivector(this, vector);
+        return this.toMatrix().multiply(v.toMatrix().transpose());
     }
 
-    public Bivector exteriorProduct(Vector2D vector)
+    public BiVector wedgeProduct(Vector2D vector)
     {
-        return new Bivector(this, vector);
+        return new BiVector(this, vector);
     }
 
-    public Paravector geometricProduct(Vector2D vector)
+    public BiVector exteriorProduct(Vector2D vector)
     {
-        return new Paravector(this.toVectorND(), vector.toVectorND());
+        return new BiVector(this, vector);
+    }
+
+    public ParaVector geometricProduct(Vector2D vector)
+    {
+        return new ParaVector(this.toVectorND(), vector.toVectorND());
     }
 
     public Vector2D hadamardProduct(Vector2D v)
@@ -112,6 +117,15 @@ public class Vector2D {
         return new Vector2D(x * v.x, y * v.y);
     }
 
+    public static Vector2D xAxis()
+    {
+        return new Vector2D(1, 0);
+    }
+
+    public static Vector2D YAxis()
+    {
+        return new Vector2D(0, 1);
+    }
     public VectorND toVectorND()
     {
         return new VectorND(new double[] {this.x, this.y});

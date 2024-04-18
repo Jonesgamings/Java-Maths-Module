@@ -142,6 +142,16 @@ public class ComplexNumber
         return eX.getAt(newComplex);
     }
 
+    public ComplexNumber ln()
+    {
+        return new ComplexNumber(Math.sqrt(real*real + imaginary*imaginary), Math.atan(imaginary/real));
+    }
+
+    public ComplexNumber log(double base)
+    {
+        return this.ln().divide(Math.log(base));
+    }
+
     public Vector2D toVector()
     {
         return new Vector2D(this.real, this.imaginary);

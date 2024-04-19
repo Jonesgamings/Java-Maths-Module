@@ -119,8 +119,7 @@ public class ComplexNumber
 
     public double angle()
     {
-        double angle = Math.atan2(this.imaginary, this.real);
-        return angle;
+        return Math.atan2(this.imaginary, this.real);
     }
 
     public double magnitude()
@@ -144,7 +143,7 @@ public class ComplexNumber
 
     public ComplexNumber ln()
     {
-        return new ComplexNumber(Math.sqrt(real*real + imaginary*imaginary), Math.atan(imaginary/real));
+        return new ComplexNumber(Math.log(Math.sqrt(real*real + imaginary*imaginary)), Math.atan(imaginary/real));
     }
 
     public ComplexNumber log(double base)

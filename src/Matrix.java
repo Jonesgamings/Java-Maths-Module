@@ -130,6 +130,49 @@ public class Matrix {
         return newMatrix;
     }
 
+    public Matrix hadamardProduct(Matrix m)
+    {
+        if (m.rows != rows || m.columns != columns) {return null;}
+        Matrix newMatrix = new Matrix(m.rows, m.columns);
+        for (int i = 0; i < m.rows; i++)
+        {
+            for (int j = 0; j < m.columns; j++)
+            {
+                newMatrix.setAt(i, j, this.getAt(i, j) * m.getAt(i, j));
+            }
+        }
+        return newMatrix;
+    }
+
+    public Matrix tensorProduct(Matrix m)
+    {
+        Matrix newMatrix = new Matrix(m.rows * this.rows, this.columns * m.columns);
+        for (int i = 0; i < newMatrix.rows; i++)
+        {
+            for (int j = 0; j < newMatrix.columns; j++)
+            {
+                double newValue = this.getAt(i / m.rows, j / m.columns) * m.getAt(i % m.rows,j % m.columns);
+                newMatrix.setAt(i, j, newValue);
+            }
+        }
+        return newMatrix;
+    }
+
+    public VectorND reshape()
+    {
+        VectorND newV = new VectorND(this.rows * this.columns);
+        int index = 0;
+        for (double[] values: this.matrix)
+        {
+            for (double value: values)
+            {
+                newV.setValue(index, value);
+                index++;
+            }
+        }
+        return newV;
+    }
+
     public VectorND toVector()
     {
         if (this.rows == 1)
@@ -359,8 +402,8 @@ public class Matrix {
     }
 
     public static void main(String[] args){
-        Matrix m = new Matrix(2, 2).random_values(1, 10);
-        System.out.println(m);
-        System.out.println(Arrays.toString(m.eigenValues()));
+        Matrix m = new Matrix(2, 3).setMatrix(new double[][] {{1, -4, 7}, {-2, 3, 3}});
+        Matrix m2 = new Matrix(4, 4).setMatrix(new double[][] {{8, -9, -6, 5}, {1, -3, -4, 7}, {2, 8, -8, -3}, {1, 2, -5, -1}});
+        System.out.println(m.tensorProduct(m2));
     }
 }

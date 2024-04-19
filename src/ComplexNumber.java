@@ -152,6 +152,36 @@ public class ComplexNumber
         return this.ln().divide(Math.log(base));
     }
 
+    public ComplexNumber sinh()
+    {
+        return new ComplexNumber(Math.sinh(this.real) * Math.cos(this.imaginary), Math.cosh(this.real) * Math.sin(this.imaginary));
+    }
+
+    public ComplexNumber cosh()
+    {
+        return new ComplexNumber(Math.cosh(this.real) * Math.cos(this.imaginary), -1 * Math.sinh(this.real) * Math.sin(this.imaginary));
+    }
+
+    public ComplexNumber tanh()
+    {
+        return this.sinh().divide(this.cosh());
+    }
+
+    public ComplexNumber sin()
+    {
+        return new ComplexNumber(Math.sin(this.real) * Math.cosh(this.imaginary), Math.cos(this.real) * Math.sinh(this.imaginary));
+    }
+
+    public ComplexNumber cos()
+    {
+        return new ComplexNumber(Math.cos(this.real) * Math.cosh(this.imaginary), -1 * Math.sin(this.real) * Math.sinh(this.imaginary));
+    }
+
+    public ComplexNumber tan()
+    {
+        return this.sin().divide(this.cos());
+    }
+
     public Vector2D toVector()
     {
         return new Vector2D(this.real, this.imaginary);
@@ -165,6 +195,6 @@ public class ComplexNumber
     public static void main(String[] args) {
         ComplexNumber c1 = new ComplexNumber(1 , 1);
         ComplexNumber c2 = new ComplexNumber(3, 4);
-        System.out.println(c1.power(c2));
+        System.out.println(c1.sin());
     }
 }

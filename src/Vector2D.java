@@ -97,6 +97,11 @@ public class Vector2D {
         return this.toMatrix().multiply(v.toMatrix().transpose());
     }
 
+    public Matrix tensorProduct(Vector2D v)
+    {
+        return this.outerProduct(v);
+    }
+
     public BiVector wedgeProduct(Vector2D vector)
     {
         return new BiVector(this, vector);

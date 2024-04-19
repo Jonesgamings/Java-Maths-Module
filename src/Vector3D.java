@@ -187,6 +187,11 @@ public class Vector3D
         return this.toMatrix().multiply(v.toMatrix().transpose());
     }
 
+    public Matrix tensorProduct(Vector3D v)
+    {
+        return this.outerProduct(v);
+    }
+
     public static Vector3D xAxis()
     {
         return new Vector3D(1, 0, 0);

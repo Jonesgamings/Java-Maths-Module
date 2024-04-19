@@ -214,6 +214,11 @@ public class VectorND
         return this.toMatrix().multiply(v.toMatrix().transpose());
     }
 
+    public Matrix tensorProduct(VectorND v)
+    {
+        return this.outerProduct(v);
+    }
+
     public double angle(VectorND vector)
     {
         return Math.acos(this.dot(vector) / (this.magnitude() * vector.magnitude()));

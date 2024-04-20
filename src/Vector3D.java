@@ -102,24 +102,9 @@ public class Vector3D
         return a.subtract(this.project(a));
     }
 
-    public BiVector wedgeProduct(Vector3D vector)
-    {
-        return new BiVector(this, vector);
-    }
-
-    public BiVector exteriorProduct(Vector3D vector)
-    {
-        return new BiVector(this, vector);
-    }
-
     public Vector3D hadamardProduct(Vector3D v)
     {
         return new Vector3D(x * v.x, y * v.y, z * v.z);
-    }
-
-    public ParaVector geometricProduct(Vector3D vector)
-    {
-        return new ParaVector(this.toVectorND(), vector.toVectorND());
     }
 
     public static Vector3D projection(Vector3D a, Vector3D b)

@@ -97,24 +97,14 @@ public class Vector2D {
         return this.toMatrix().multiply(v.toMatrix().transpose());
     }
 
+    public double cross(Vector2D vector)
+    {
+        return vector.y * this.x - this.y * vector.x;
+    }
+
     public Matrix tensorProduct(Vector2D v)
     {
         return this.outerProduct(v);
-    }
-
-    public BiVector wedgeProduct(Vector2D vector)
-    {
-        return new BiVector(this, vector);
-    }
-
-    public BiVector exteriorProduct(Vector2D vector)
-    {
-        return new BiVector(this, vector);
-    }
-
-    public ParaVector geometricProduct(Vector2D vector)
-    {
-        return new ParaVector(this.toVectorND(), vector.toVectorND());
     }
 
     public Vector2D hadamardProduct(Vector2D v)
@@ -153,6 +143,6 @@ public class Vector2D {
     public static void main(String[] args) {
         Vector2D v1 = new Vector2D(1, 1);
         Vector2D v2 = new Vector2D(2, 2);
-        System.out.println(v1.geometricProduct(v2));
+        System.out.println(v1);
     }
 }

@@ -160,17 +160,6 @@ public class VectorND
         }
         return Math.sqrt(squaredSum);
     }
-
-    public BiVector wedgeProduct(VectorND vector)
-    {
-        return new BiVector(this, vector);
-    }
-
-    public BiVector exteriorProduct(VectorND vector)
-    {
-        return new BiVector(this, vector);
-    }
-
     public VectorND hadamardProduct(VectorND v)
     {
         if (v.dimensions != this.dimensions) {return null;}
@@ -180,11 +169,6 @@ public class VectorND
             values[i] = v.getValue(i) * this.getValue(i);
         }
         return new VectorND(values);
-    }
-
-    public ParaVector geometricProduct(VectorND vector)
-    {
-        return new ParaVector(this, vector);
     }
 
     public VectorND normalise()

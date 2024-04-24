@@ -380,6 +380,18 @@ public class Polynomial
         return newArray;
     }
 
+    public static Polynomial LnX_1(int accuracy)
+    {
+        if (accuracy > 171) {accuracy = 171;}
+        ArrayList<Double> coefficients = new ArrayList<>();
+        coefficients.add(0d);
+        for (int i =1; i<accuracy; i++)
+        {
+            coefficients.add(-1 * (Math.pow(-1, i) / i));
+        }
+        return new Polynomial(coefficients.reversed().stream().mapToDouble(i -> i).toArray());
+    }
+
     public static Polynomial NtoX(double n, int accuracy)
     {
         if (accuracy > 171) {accuracy = 171;}
@@ -392,13 +404,6 @@ public class Polynomial
     }
 
     public static void main(String[] args) {
-        ArrayList<Double> coef = new ArrayList<>();
-        for (int i = 0; i < 5; i++)
-        {
-            coef.add(new Random().nextDouble(-10, 10));
-        }
-        Polynomial p = new Polynomial(coef.stream().mapToDouble(i -> i).toArray());
-        System.out.println(p);
-        System.out.println(Arrays.toString(p.findRealRoot(-100, 100)));
+
     }
 }

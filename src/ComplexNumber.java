@@ -1,4 +1,3 @@
-import java.util.Map;
 import java.util.Objects;
 
 public class ComplexNumber
@@ -143,7 +142,7 @@ public class ComplexNumber
 
     public ComplexNumber ln()
     {
-        return new ComplexNumber(Math.log(Math.sqrt(real*real + imaginary*imaginary)), Math.atan(imaginary/real));
+        return new ComplexNumber(Math.sqrt(real*real + imaginary*imaginary), Math.atan(imaginary/real));
     }
 
     public ComplexNumber log(double base)
@@ -194,6 +193,6 @@ public class ComplexNumber
     public static void main(String[] args) {
         ComplexNumber c1 = new ComplexNumber(1 , 1);
         ComplexNumber c2 = new ComplexNumber(3, 4);
-        System.out.println(c1.sin());
+        System.out.println(c1.tanh());
     }
 }

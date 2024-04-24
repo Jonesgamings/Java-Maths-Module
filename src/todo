@@ -6,13 +6,9 @@
 - Add log rules to simplification function
 - Add simplification to simplify functions (a * a = a^2)
 
-- Add Wedge Product
-- Add Bivectors / Trovectors ...
 - Add Vector spaces
 - Tensors
 - Vector Space/Fields
-- Spacetime algebra?
 - Outer and Inner product
-- YAY multivectors
 
 - Refactor code in either another language to allow operator overloading or Overhaul system to have a "CustomNumber" class which all maths data storage class implement from so they can all interact;

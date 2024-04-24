@@ -3,8 +3,8 @@ import java.util.Objects;
 
 public class Fraction
 {
-    int numerator;
-    int denominator;
+    long numerator;
+    long denominator;
 
     public Fraction(int numerator, int denominator)
     {
@@ -12,28 +12,34 @@ public class Fraction
         this.denominator = denominator;
     }
 
-    public static Fraction convertRecursive(int recursiveDigits)
+    public Fraction(long numerator, long denominator)
     {
-        int lengthDigits = String.valueOf(recursiveDigits).length();
-        if (lengthDigits >= 9) {return null;}
-        return new Fraction(recursiveDigits, (int) (Math.pow(10, lengthDigits) - 1)).simplify();
+        this.numerator = numerator;
+        this.denominator = denominator;
+    }
+
+    public static Fraction convertRecursive(long recursiveDigits)
+    {
+        long lengthDigits = String.valueOf(recursiveDigits).length();
+        if (lengthDigits >= 15) {return null;}
+        return new Fraction(recursiveDigits, (long) (Math.pow(10, lengthDigits) - 1)).simplify();
     }
 
     public static Fraction convertDouble(double number)
     {
         String numberString = Double.toString(number);;
-        int digitsAfterFullStop = 0;
+        long digitsAfterFullStop = 0;
         boolean fullstop = false;
-        for (int i = 0; i < numberString.length(); i++)
+        for (long i = 0; i < numberString.length(); i++)
         {
-            if ((Character.toString(numberString.charAt(i))).equals(".")) {fullstop = true;}
+            if ((Character.toString(numberString.charAt((int) i))).equals(".")) {fullstop = true;}
             else if (fullstop) {digitsAfterFullStop += 1;}
         }
-        if (digitsAfterFullStop >= 9)
+        if (digitsAfterFullStop >= 15)
         {
-            digitsAfterFullStop = 9;
+            digitsAfterFullStop = 15;
         }
-        return new Fraction((int) (number * Math.pow(10, digitsAfterFullStop)), (int) Math.pow(10, digitsAfterFullStop)).simplify();
+        return new Fraction((long) (number * Math.pow(10, digitsAfterFullStop)), (long) Math.pow(10, digitsAfterFullStop)).simplify();
     }
 
     public double evaluate()
@@ -41,16 +47,16 @@ public class Fraction
         return (double) this.numerator/this.denominator;
     }
 
-    public static ArrayList<Integer> primeFactors(int number)
+    public static ArrayList<Long> primeFactors(long number)
     {
-        ArrayList<Integer> factors = new ArrayList<>();
+        ArrayList<Long> factors = new ArrayList<>();
         while (number % 2 == 0)
         {
-            factors.add(2);
+            factors.add(2l);
             number /= 2;
         }
 
-        for (int i = 3; i <= Math.sqrt(number); i += 2)
+        for (long i = 3; i <= Math.sqrt(number); i += 2)
         {
             while (number % i == 0)
             {
@@ -75,8 +81,8 @@ public class Fraction
     public Fraction simplify()
     {
         if (numerator % denominator == 0) {return new Fraction((numerator / denominator), 1);}
-        ArrayList<Integer> numeratorFactors = primeFactors(numerator);
-        ArrayList<Integer> denominatorFactors = primeFactors(denominator);
+        ArrayList<Long> numeratorFactors = primeFactors(numerator);
+        ArrayList<Long> denominatorFactors = primeFactors(denominator);
 
         if (numeratorFactors.size() == 1)
         {
@@ -88,32 +94,32 @@ public class Fraction
             if (!numeratorFactors.contains(denominator)) {return this;}
         }
 
-        for (int n = 0; n < numeratorFactors.size(); n++)
+        for (long n = 0; n < numeratorFactors.size(); n++)
         {
-            for (int d = 0; d < denominatorFactors.size(); d++)
+            for (long d = 0; d < denominatorFactors.size(); d++)
             {
-                if (Objects.equals(numeratorFactors.get(n), denominatorFactors.get(d))){
+                if (Objects.equals(numeratorFactors.get((int) n), denominatorFactors.get((int) d))){
                     numeratorFactors.remove(n);
                     denominatorFactors.remove(d);
                 }
             }
         }
-        int newNumerator = 1;
-        int newDenominator = 1;
-        for (int i: numeratorFactors)
+        long newNumerator = 1;
+        long newDenominator = 1;
+        for (long i: numeratorFactors)
         {
             newNumerator *= i;
         }
-        for (int j: denominatorFactors)
+        for (long j: denominatorFactors)
         {
             newDenominator *= j;
         }
         return new Fraction(newNumerator, newDenominator);
     }
 
-    public Fraction power(int number)
+    public Fraction power(long number)
     {
-        return new Fraction((int) Math.pow(this.numerator, number), (int) Math.pow(this.denominator, number));
+        return new Fraction((long) Math.pow(this.numerator, number), (long) Math.pow(this.denominator, number));
     }
 
     public Fraction inverse()
@@ -126,7 +132,7 @@ public class Fraction
         return new Fraction(fraction.numerator * this.numerator, fraction.denominator * this.denominator);
     }
 
-    public Fraction multiply(int number)
+    public Fraction multiply(long number)
     {
         return new Fraction(this.numerator * number, this.denominator);
     }
@@ -136,7 +142,7 @@ public class Fraction
         return this.multiply(fraction.inverse());
     }
 
-    public Fraction divide(int number)
+    public Fraction divide(long number)
     {
         return new Fraction(this.numerator, this.denominator * number);
     }
@@ -151,12 +157,12 @@ public class Fraction
         return new Fraction( fraction.denominator * this.numerator - this.denominator * fraction.numerator, this.denominator * fraction.denominator);
     }
 
-    public Fraction add(int number)
+    public Fraction add(long number)
     {
         return new Fraction(this.denominator * number + this.numerator, this.denominator);
     }
 
-    public Fraction subtract(int number)
+    public Fraction subtract(long number)
     {
         return new Fraction(this.numerator - this.denominator * number, this.denominator);
     }

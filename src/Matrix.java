@@ -14,6 +14,28 @@ public class Matrix {
         this.matrix = new double[rows][columns];
     }
 
+    public double[] getRow(int index)
+    {
+        return this.matrix[index];
+    }
+
+    public double[] getColumn(int index)
+    {
+        return this.transpose().getRow(index);
+    }
+
+    public void setRow(int index, double[] row)
+    {
+        this.matrix[index] = row;
+    }
+
+    public void setColumn(int index, double[] column)
+    {
+        Matrix transpose = this.transpose();
+        transpose.setColumn(index, column);
+        this.matrix = transpose.matrix;
+    }
+
     public double[][] getMatrix() {
         return matrix;
     }

@@ -123,7 +123,7 @@ public class ComplexNumber
 
     public double magnitude()
     {
-        return Math.pow(Math.pow(this.real, 2) + Math.pow(this.imaginary, 2), 0.5);
+        return Math.sqrt(Math.pow(this.real, 2) + Math.pow(this.imaginary, 2));
     }
 
     public ComplexNumber power(double power)
@@ -193,6 +193,6 @@ public class ComplexNumber
     public static void main(String[] args) {
         ComplexNumber c1 = new ComplexNumber(1 , 1);
         ComplexNumber c2 = new ComplexNumber(3, 4);
-        System.out.println(c1.tanh());
+        System.out.println(c1.sinh());
     }
 }

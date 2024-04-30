@@ -147,6 +147,11 @@ public class Vector3D
         return new Vector3D(this.x/factor, this.y/factor, this.z/factor);
     }
 
+    public Vector3D elementDivision(Vector3D vector)
+    {
+        return new Vector3D(this.x/vector.x, this.y/vector.y, this.z/vector.z);
+    }
+
     public VectorND toVectorND()
     {
         return new VectorND(new double[] {this.x, this.y, this.z});

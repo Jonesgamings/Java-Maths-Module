@@ -62,4 +62,18 @@ public class Line
         return null;
     }
 
+    public Vector3D intersection(Line line)
+    {
+        Vector3D points = line.point.subtract(this.point);
+        Vector3D gradients = this.direction.subtract(line.direction);
+        Vector3D ts = points.elementDivision(gradients);
+        return this.position(ts.x);
+    }
+
+    public static void main(String[] args) {
+        Line l = new Line(new Vector3D(8, 1, 0), new Vector3D(-2, 0, 0));
+        Line l2 = new Line(new Vector3D(7, -4, 0), new Vector3D(0, 10, 0));
+        System.out.println(l.intersection(l2));
+    }
+
 }

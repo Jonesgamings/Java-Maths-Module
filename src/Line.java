@@ -75,5 +75,4 @@ public class Line
         Line l2 = new Line(new Vector3D(7, -4, 0), new Vector3D(0, 10, 0));
         System.out.println(l.intersection(l2));
     }
-
 }

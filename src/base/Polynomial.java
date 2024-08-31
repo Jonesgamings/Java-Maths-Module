@@ -1,3 +1,5 @@
+package base;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -342,6 +344,11 @@ public class Polynomial
             total *= i;
         }
         return total;
+    }
+
+    public static double Choose(int n, int k)
+    {
+        return Polynomial.Factorial(n) / (Polynomial.Factorial(k) * Polynomial.Factorial(n-k));
     }
 
     private static int Product(int n, int starting)

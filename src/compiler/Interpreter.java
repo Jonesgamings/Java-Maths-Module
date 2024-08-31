@@ -1,5 +1,7 @@
 package compiler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -61,8 +63,29 @@ public class Interpreter
                 LogNode logNode = (LogNode) node;
                 yield this.stringLogNode(logNode);
             }
+            case "compiler.ChainBinOpNode" -> {
+                ChainBinOpNode chainBinOpNode = (ChainBinOpNode) node;
+                yield this.stringChainBinOpNode(chainBinOpNode);
+            }
             default -> null;
         };
+    }
+
+    public String stringChainBinOpNode(ChainBinOpNode node)
+    {
+        StringBuilder toReturn = new StringBuilder();
+        toReturn.append("(");
+        for (int i = 0; i < node.nodes.size(); i++)
+        {
+            toReturn.append(this.nodeToString(node.nodes.get(i)));
+            if (i != node.nodes.size()-1)
+            {
+                if (node.operator.type == TokenTypes.PLUS) {toReturn.append(" + ");}
+                if (node.operator.type == TokenTypes.MULTIPLY) {toReturn.append(" * ");}
+            }
+        }
+        toReturn.append(")");
+        return toReturn.toString();
     }
 
     @Override
@@ -94,6 +117,92 @@ public class Interpreter
         Node left = this.simplifyNode(node.left);
         Node right = this.simplifyNode(node.right);
         BinOpNode newBinOp = new BinOpNode(left, node.operator, right);
+        if (node.operator.type == TokenTypes.MULTIPLY || node.operator.type == TokenTypes.PLUS) {
+
+            if (left.getClass() == BinOpNode.class && right.getClass() == ChainBinOpNode.class) {
+                BinOpNode binOpLeft = (BinOpNode) left;
+                ChainBinOpNode binOpRight = (ChainBinOpNode) right;
+                if (binOpLeft.operator.type == node.operator.type && binOpRight.operator.type == node.operator.type) {
+                    ChainBinOpNode newChained = new ChainBinOpNode(node.operator.copy());
+                    newChained.nodes.addAll(binOpRight.nodes);
+                    newChained.addNode(binOpLeft.left);
+                    newChained.addNode(binOpLeft.right);
+                    this.simplified = true;
+                    return newChained;
+                }
+            }
+
+            if (left.getClass() == ChainBinOpNode.class && right.getClass() == BinOpNode.class) {
+                ChainBinOpNode binOpLeft = (ChainBinOpNode) left;
+                BinOpNode binOpRight = (BinOpNode) right;
+                if (binOpLeft.operator.type == node.operator.type && binOpRight.operator.type == node.operator.type) {
+                    ChainBinOpNode newChained = new ChainBinOpNode(node.operator.copy());
+                    newChained.nodes.addAll(binOpLeft.nodes);
+                    newChained.addNode(binOpRight.left);
+                    newChained.addNode(binOpRight.right);
+                    this.simplified = true;
+                    return newChained;
+                }
+            }
+
+            // Checks if left or right of BinOpNode is also a binopnode of same operator
+            if (left.getClass() == BinOpNode.class && right.getClass() != BinOpNode.class) {
+                BinOpNode binOpLeft = (BinOpNode) left;
+                if (binOpLeft.operator.type == node.operator.type) {
+                    this.simplified = true;
+                    return new ChainBinOpNode(new ArrayList<Node>(Arrays.asList(binOpLeft.left, binOpLeft.right, right)), node.operator.copy());
+                }
+            }
+            if (left.getClass() == BinOpNode.class && right.getClass() == BinOpNode.class) {
+                BinOpNode binOpLeft = (BinOpNode) left;
+                BinOpNode binOpRight = (BinOpNode) right;
+                if (binOpRight.operator.type == node.operator.type && binOpLeft.operator.type == node.operator.type) {
+                    this.simplified = true;
+                    return new ChainBinOpNode(new ArrayList<Node>(Arrays.asList(binOpLeft.left, binOpLeft.right, binOpRight.left, binOpRight.right)), node.operator.copy());
+                }
+            }
+            if (left.getClass() != BinOpNode.class && right.getClass() == BinOpNode.class) {
+                BinOpNode binOpRight = (BinOpNode) right;
+                if (binOpRight.operator.type == node.operator.type) {
+                    this.simplified = true;
+                    return new ChainBinOpNode(new ArrayList<Node>(Arrays.asList(left, binOpRight.left, binOpRight.right)), node.operator.copy());
+                }
+            }
+
+            // For Chained bin op nodes
+
+            if (left.getClass() == ChainBinOpNode.class && right.getClass() != ChainBinOpNode.class) {
+                ChainBinOpNode binOpLeft = (ChainBinOpNode) left;
+                if (binOpLeft.operator.type == node.operator.type) {
+                    ChainBinOpNode newChained = new ChainBinOpNode(node.operator.copy());
+                    newChained.nodes.addAll(binOpLeft.nodes);
+                    newChained.addNode(right);
+                    this.simplified = true;
+                    return newChained;
+                }
+            }
+            if (left.getClass() == ChainBinOpNode.class && right.getClass() == ChainBinOpNode.class) {
+                ChainBinOpNode binOpLeft = (ChainBinOpNode) left;
+                ChainBinOpNode binOpRight = (ChainBinOpNode) right;
+                if (binOpLeft.operator.type == node.operator.type && binOpRight.operator.type == node.operator.type) {
+                    ChainBinOpNode newChained = new ChainBinOpNode(node.operator.copy());
+                    newChained.nodes.addAll(binOpLeft.nodes);
+                    newChained.nodes.addAll(binOpRight.nodes);
+                    this.simplified = true;
+                    return newChained;
+                }
+            }
+            if (left.getClass() != ChainBinOpNode.class && right.getClass() == ChainBinOpNode.class) {
+                ChainBinOpNode binOpRight = (ChainBinOpNode) right;
+                if (binOpRight.operator.type == node.operator.type) {
+                    ChainBinOpNode newChained = new ChainBinOpNode(node.operator.copy());
+                    newChained.nodes.addAll(binOpRight.nodes);
+                    newChained.addNode(left);
+                    this.simplified = true;
+                    return newChained;
+                }
+            }
+        }
         if (left.getClass() == NumberNode.class && right.getClass() != NumberNode.class)
         {
             NumberNode newL = (NumberNode) left;
@@ -218,6 +327,19 @@ public class Interpreter
                 return new UnaryOpNode(new Token(TokenTypes.MINUS), exprU.exprNode);
             }
         }
+        if (expr.getClass() == ChainBinOpNode.class)
+        {
+            if (node.operator.type == TokenTypes.MINUS || node.operator.type == TokenTypes.PLUS)
+            {
+                ChainBinOpNode exprChainBinOp = (ChainBinOpNode) expr;
+                Node first = exprChainBinOp.nodes.getFirst();
+                Node newFirst = this.simplifyUnaryOpNode(new UnaryOpNode(new Token(TokenTypes.MINUS), first));
+                exprChainBinOp.removeNode(0);
+                exprChainBinOp.addNode(newFirst);
+                this.simplified = true;
+                return exprChainBinOp;
+            }
+        }
         return new UnaryOpNode(node.operator, expr);
     }
 
@@ -230,7 +352,140 @@ public class Interpreter
             this.simplified = true;
             return new NumberNode(new Token(TokenTypes.NUMBER, this.calculateLogNode(node)));
         }
+        if (inside.getClass() == BinOpNode.class) {
+            BinOpNode binopnode = (BinOpNode) inside;
+            if (binopnode.operator.type == TokenTypes.POW)
+            {
+                if (binopnode.left.equals(base))
+                {
+                    return binopnode.right;
+                }
+            }
+        }
         return new LogNode(base, inside);
+    }
+
+    public Node simplifyChainBinOpNode(ChainBinOpNode node)
+    {
+        if (node.operator.type == TokenTypes.MULTIPLY)
+        {
+            ChainBinOpNode newChained = new ChainBinOpNode(node.operator.copy());
+            boolean allNumber = true;
+            for (Node insideNode: node.nodes)
+            {
+                Node newInside = this.simplifyNode(insideNode);
+                if (newInside.getClass() == NumberNode.class)
+                {
+                    NumberNode insideNumber = (NumberNode) newInside;
+                    if (insideNumber.numberToken.value == 0)
+                    {
+                        this.simplified = true;
+                        return new NumberNode(new Token(TokenTypes.NUMBER, 0));
+                    }
+                    if (insideNumber.numberToken.value != 1)
+                    {
+                        newChained.addNode(insideNumber);
+                    }
+                }
+                else if (newInside.getClass() == ChainBinOpNode.class)
+                {
+                    ChainBinOpNode newChainInside = (ChainBinOpNode) newInside;
+                    allNumber = false;
+                    if (newChainInside.operator.type == TokenTypes.MULTIPLY) {
+                        this.simplified = true;
+                        for (Node innerNewChainInside : newChainInside.nodes) {
+                            newChained.addNode(innerNewChainInside);
+                        }
+                    }
+                    else {newChained.addNode(newInside);}
+                }
+                else if (newInside.getClass() == BinOpNode.class)
+                {
+                    BinOpNode newBinOpInside = (BinOpNode) newInside;
+                    allNumber = false;
+                    if (newBinOpInside.operator.type == TokenTypes.MULTIPLY) {
+                        this.simplified = true;
+                        newChained.addNode(newBinOpInside.left);
+                        newChained.addNode(newBinOpInside.right);
+                    }
+                    else {newChained.addNode(newInside);}
+                }
+                else {
+                    allNumber = false;
+                    newChained.addNode(newInside);
+                }
+            }
+            if (allNumber)
+            {
+                this.simplified = true;
+                System.out.println(newChained);
+                return new NumberNode(new Token(TokenTypes.NUMBER, this.calculateNode(newChained)));
+            }
+
+            if (newChained.nodes.size() == 2)
+            {
+                return new BinOpNode(newChained.nodes.get(0), newChained.operator.copy(), newChained.nodes.get(1));
+            }
+            return newChained;
+        }
+
+        if (node.operator.type == TokenTypes.PLUS)
+        {
+            ChainBinOpNode newChained = new ChainBinOpNode(node.operator.copy());
+            boolean allNumber = true;
+            for (Node insideNode: node.nodes)
+            {
+                Node newInside = this.simplifyNode(insideNode);
+                if (newInside.getClass() == NumberNode.class)
+                {
+                    NumberNode insideNumber = (NumberNode) newInside;
+                    if (insideNumber.numberToken.value != 0)
+                    {
+                        newChained.addNode(insideNumber);
+                    }
+                }
+                else if (newInside.getClass() == ChainBinOpNode.class)
+                {
+                    ChainBinOpNode newChainInside = (ChainBinOpNode) newInside;
+                    allNumber = false;
+                    if (newChainInside.operator.type == TokenTypes.PLUS) {
+                        this.simplified = true;
+                        for (Node innerNewChainInside : newChainInside.nodes) {
+                            newChained.addNode(innerNewChainInside);
+                        }
+                    }
+                    else {newChained.addNode(newInside);}
+                }
+                else if (newInside.getClass() == BinOpNode.class)
+                {
+                    BinOpNode newBinOpInside = (BinOpNode) newInside;
+                    allNumber = false;
+                    if (newBinOpInside.operator.type == TokenTypes.PLUS) {
+                        this.simplified = true;
+                        newChained.addNode(newBinOpInside.left);
+                        newChained.addNode(newBinOpInside.right);
+                    }
+                    else {newChained.addNode(newInside);}
+                }
+                else {
+                    allNumber = false;
+                    newChained.addNode(newInside);
+                }
+            }
+            if (allNumber)
+            {
+                this.simplified = true;
+                System.out.println(newChained);
+                return new NumberNode(new Token(TokenTypes.NUMBER, this.calculateNode(newChained)));
+            }
+
+            if (newChained.nodes.size() == 2)
+            {
+                return new BinOpNode(newChained.nodes.get(0), newChained.operator.copy(), newChained.nodes.get(1));
+            }
+            return newChained;
+        }
+        return null;
     }
 
     public Node simplifyNode(Node node)
@@ -253,6 +508,11 @@ public class Interpreter
                 VariableNode variableNode = (VariableNode) node;
                 if (this.variables.containsKey(variableNode.variableToken.valueString)) {return new NumberNode(new Token(TokenTypes.NUMBER, this.calculateVariableNode(variableNode)));}
                 return node;
+            }
+            case "compiler.ChainBinOpNode" ->
+            {
+                ChainBinOpNode chainBinOpNode = (ChainBinOpNode) node;
+                return this.simplifyChainBinOpNode(chainBinOpNode);
             }
         };
         return node;
@@ -351,6 +611,30 @@ public class Interpreter
         return null;
     }
 
+    public Node derivativeChainBinOpNode(ChainBinOpNode node)
+    {
+        if (node.operator.type == TokenTypes.MULTIPLY) {
+            ChainBinOpNode derivative = new ChainBinOpNode(new Token(TokenTypes.PLUS));
+            for (int i = 0; i < node.nodes.size(); i++) {
+                ChainBinOpNode nodeCopy = node.copy();
+                nodeCopy.removeNode(i);
+                nodeCopy.addNode(this.derivativeNode(node.nodes.get(i)));
+                derivative.addNode(nodeCopy);
+            }
+            return derivative;
+        }
+        if (node.operator.type == TokenTypes.PLUS)
+        {
+            ChainBinOpNode derivative = new ChainBinOpNode(new Token(TokenTypes.PLUS));
+            for (Node insideNode: node.nodes)
+            {
+                derivative.addNode(this.derivativeNode(insideNode));
+            }
+            return derivative;
+        }
+        return null;
+    }
+
     public Node derivativeNode(Node node)
     {
         return switch (node.getClass().getName()) {
@@ -373,6 +657,10 @@ public class Interpreter
             case "compiler.LogNode" -> {
                 LogNode logNode = (LogNode) node;
                 yield  this.derivativeLogNode(logNode);
+            }
+            case "compiler.ChainBinOpNode" -> {
+                ChainBinOpNode chainBinOpNode = (ChainBinOpNode) node;
+                yield this.derivativeChainBinOpNode(chainBinOpNode);
             }
             default -> null;
         };
@@ -448,6 +736,27 @@ public class Interpreter
         return this.variables.get(variableName);
     }
 
+    public double calculateChainBinOpNode(ChainBinOpNode node)
+    {
+        if (node.operator.type == TokenTypes.MULTIPLY) {
+            double total = 1;
+            for (Node insideNode: node.nodes)
+            {
+                total *= this.calculateNode(insideNode);
+            }
+            return total;
+        }
+        else if (node.operator.type == TokenTypes.PLUS) {
+            double total = 0;
+            for (Node insideNode: node.nodes)
+            {
+                total += this.calculateNode(insideNode);
+            }
+            return total;
+        }
+        return 0;
+    }
+
     public double calculateNode(Node node)
     {
         return switch (node.getClass().getName()) {
@@ -469,7 +778,11 @@ public class Interpreter
             }
             case "compiler.LogNode" -> {
                 LogNode logNode = (LogNode) node;
-                yield  this.calculateLogNode(logNode);
+                yield this.calculateLogNode(logNode);
+            }
+            case "compiler.ChainBinOpNode" -> {
+                ChainBinOpNode chainBinOpNode = (ChainBinOpNode) node;
+                yield this.calculateChainBinOpNode(chainBinOpNode);
             }
             default -> 0;
         };
@@ -485,6 +798,9 @@ public class Interpreter
         Lexer l = new Lexer("sin(x^2)");
         Parser p = new Parser(l.createTokens());
         Interpreter i = new Interpreter(p.parse());
-        System.out.println(new Interpreter(new Interpreter(i.derivative()).derivative()));
+        Interpreter i2 =  new Interpreter(new Interpreter(i.derivative()).derivative());
+        System.out.println(i2);
+        i2.setVariable("x", 3);
+        System.out.println(i2.calculateValue());
     }
 }

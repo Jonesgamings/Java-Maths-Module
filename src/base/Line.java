@@ -1,3 +1,5 @@
+package base;
+
 public class Line
 {
     Vector3D direction;

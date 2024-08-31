@@ -1,3 +1,5 @@
+package base;
+
 public class Quaternion
 {
     double a;
@@ -67,13 +69,13 @@ public class Quaternion
     }
 
     /*
-    public Quaternion multiply(Quaternion quaternion)
+    public base.Quaternion multiply(base.Quaternion quaternion)
     {
         double newA = a * quaternion.a - i* quaternion.i - j* quaternion.j - k* quaternion.k;
         double newI = a*quaternion.i + i*quaternion.a + j*quaternion.k - k*quaternion.j;
         double newJ = a*quaternion.j - i*quaternion.k + j*quaternion.a + k*quaternion.i;
         double newK = a*quaternion.k + i*quaternion.j - j*quaternion.i + k*quaternion.a;
-        return new  Quaternion(newA, newI, newJ, newK);
+        return new  base.Quaternion(newA, newI, newJ, newK);
     }
     */
 

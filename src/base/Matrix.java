@@ -1,3 +1,5 @@
+package base;
+
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
@@ -137,6 +139,18 @@ public class Matrix {
             }
         }
         return identityMatrix;
+    }
+
+    public static Matrix zeroesMatrix(int size)
+    {
+        Matrix zeroesMatrix = new Matrix(size, size);
+        for (int row = 0; row < zeroesMatrix.rows; row++) {
+            for (int column = 0; column < zeroesMatrix.columns; column++) {
+                if (row != column) {continue;}
+                zeroesMatrix.setAt(row, column, 0f);
+            }
+        }
+        return zeroesMatrix;
     }
 
     public Matrix random_values(double min, double max)

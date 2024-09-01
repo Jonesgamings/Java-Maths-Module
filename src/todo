@@ -10,3 +10,6 @@
 - Tensors
 - Vector Space/Fields
 - Outer and Inner product
+
+- allow for just Ln() and Log() in compiler
+- Fix bug in graph package for adjaceny matrix

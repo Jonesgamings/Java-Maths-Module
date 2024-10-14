@@ -1,12 +1,14 @@
 package base;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class Polynomial
 {
     double[] coefficients;
     int degree;
+    private static HashMap<Integer, Double> Factorials = new HashMap<>();
 
     public Polynomial(double[] coefficients)
     {
@@ -39,7 +41,10 @@ public class Polynomial
     {
         ComplexMatrix total = new ComplexMatrix(x.rows, x.columns);
         for (int i=0; i < this.degree+1; i++) {
-            total = total.add(x.power(degree-i).multiply(this.coefficients[i]));
+            double coefficient = this.coefficients[i];
+            if (coefficient != 0) {
+                total = total.add(x.power(degree - i).multiply(coefficient));
+            }
         }
         return total;
     }
@@ -48,7 +53,10 @@ public class Polynomial
     {
         Matrix total = new Matrix(x.rows, x.columns);
         for (int i=0; i < this.degree+1; i++) {
-            total = total.add(x.power(degree-i).multiply(this.coefficients[i]));
+            double coefficient = this.coefficients[i];
+            if (coefficient != 0) {
+                total = total.add(x.power(degree - i).multiply(coefficient));
+            }
         }
         return total;
     }
@@ -57,7 +65,10 @@ public class Polynomial
     {
         ComplexNumber total = new ComplexNumber(0, 0);
         for (int i=0; i < this.degree+1; i++) {
-            total = total.add(x.power(degree-i).multiply(this.coefficients[i]));
+            double coefficient = this.coefficients[i];
+            if (coefficient != 0) {
+                total = total.add(x.power(degree - i).multiply(coefficient));
+            }
         }
         return total;
     }
@@ -66,7 +77,10 @@ public class Polynomial
     {
         double total = 0;
         for (int i=0; i < this.degree+1; i++) {
-            total += this.coefficients[i] * Math.pow(x, this.degree - i);
+            double coefficient = this.coefficients[i];
+            if (coefficient != 0) {
+                total += coefficient * Math.pow(x, this.degree - i);
+            }
         }
         return total;
     }
@@ -346,9 +360,25 @@ public class Polynomial
         return total;
     }
 
+    public static double RecursiveFactorial(int n)
+    {
+        if (n < 0) {return Double.NaN;}
+        if (n == 1 || n == 0) {return 1;}
+        if (n == 2) {return 2;}
+        return n * RecursiveFactorial(n-1);
+    }
+
+    public static double EfficientFactorial(int n)
+    {
+        if (n==0 || n==1) {return 1;}
+        if (Factorials.containsKey(n)) {return Factorials.get(n);}
+        Factorials.put(n, EfficientFactorial(n-1) * n);
+        return EfficientFactorial(n-1) * n;
+    }
+
     public static double Choose(int n, int k)
     {
-        return Polynomial.Factorial(n) / (Polynomial.Factorial(k) * Polynomial.Factorial(n-k));
+        return Polynomial.EfficientFactorial(n) / (Polynomial.EfficientFactorial(k) * Polynomial.EfficientFactorial(n-k));
     }
 
     private static int Product(int n, int starting)
@@ -403,12 +433,13 @@ public class Polynomial
         ArrayList<Double> coefficients = new ArrayList<>();
         for (int i =0; i<accuracy; i++)
         {
-            coefficients.add(Math.pow(Math.log(n), i) / Polynomial.Factorial(i));
+            coefficients.add(Math.pow(Math.log(n), i) / Polynomial.EfficientFactorial(i));
         }
         return new Polynomial(coefficients.reversed().stream().mapToDouble(i -> i).toArray());
     }
 
     public static void main(String[] args) {
-
+        System.out.println(EfficientFactorial(100));
+        System.out.println(Factorials);
     }
 }

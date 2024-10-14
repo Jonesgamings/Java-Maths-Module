@@ -24,6 +24,7 @@ public enum TokenTypes
     ACOSH,
     ATANH,
     LOG,
+    LN,
     COMMA,
     VARIABLE
 }

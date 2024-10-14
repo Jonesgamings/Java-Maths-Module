@@ -11,7 +11,7 @@ public class Parser {
 
     final ArrayList<TokenTypes> terms = new ArrayList<TokenTypes>(Arrays.asList(TokenTypes.MULTIPLY, TokenTypes.DIVIDE));
     final ArrayList<TokenTypes> expressions = new ArrayList<TokenTypes>(Arrays.asList(TokenTypes.PLUS, TokenTypes.MINUS));
-    final ArrayList<TokenTypes> functions = new ArrayList<TokenTypes>(Arrays.asList(TokenTypes.SIN, TokenTypes.COS, TokenTypes.TAN, TokenTypes.SINH, TokenTypes.COSH, TokenTypes.TANH, TokenTypes.LOG, TokenTypes.ASIN, TokenTypes.ACOS, TokenTypes.ATAN, TokenTypes.ASINH, TokenTypes.ACOSH, TokenTypes.ATANH));
+    final ArrayList<TokenTypes> functions = new ArrayList<TokenTypes>(Arrays.asList(TokenTypes.SIN, TokenTypes.COS, TokenTypes.TAN, TokenTypes.SINH, TokenTypes.COSH, TokenTypes.TANH, TokenTypes.LOG, TokenTypes.LN, TokenTypes.ASIN, TokenTypes.ACOS, TokenTypes.ATAN, TokenTypes.ASINH, TokenTypes.ACOSH, TokenTypes.ATANH));
 
     public Parser(ArrayList<Token> tokens)
     {
@@ -48,7 +48,7 @@ public class Parser {
                     this.advance();
                     return new UnaryOpNode(token, expression);
                 }
-                else if (this.currentToken.type == TokenTypes.COMMA)
+                else if (this.currentToken.type == TokenTypes.COMMA && token.type == TokenTypes.LOG)
                 {
                     this.advance();
                     Node insideLog = this.expression();

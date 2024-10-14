@@ -37,7 +37,11 @@ public class Graph
         Matrix adjacencyMatrix = Matrix.zeroesMatrix(this.vertices.size());
         for (Arc arc: this.arcs)
         {
-            adjacencyMatrix.setAt(arc.start.ID, arc.end.ID, arc.weight);
+            adjacencyMatrix.setAt(arc.start.ID, arc.end.ID, adjacencyMatrix.getAt(arc.start.ID  , arc.end.ID) + 1);
+            if (!arc.directed)
+            {
+                adjacencyMatrix.setAt(arc.end.ID, arc.start.ID, adjacencyMatrix.getAt(arc.end.ID  , arc.start.ID) + 1);
+            }
         }
         return adjacencyMatrix;
     }
@@ -51,7 +55,7 @@ public class Graph
         }
         for (int i =0; i < size; i++)
         {
-            for (int j =0; j < size; j++)
+            for (int j =0; j <= i; j++)
             {
                 if (i != j)
                 {
@@ -60,6 +64,11 @@ public class Graph
             }
         }
         return newGraph;
+    }
+
+    public boolean isEulerian()
+    {
+        return false;
     }
 
     @Override
@@ -77,6 +86,7 @@ public class Graph
 
     public static void main(String[] args) {
         Graph graph = Graph.K(5);
+        System.out.println(graph.vertices.get(0).arcs);
         System.out.println(graph.adjacencyMatrix());
     }
 }

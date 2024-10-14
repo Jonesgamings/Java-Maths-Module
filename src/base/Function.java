@@ -3,6 +3,7 @@ package base;
 import compiler.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Function {
@@ -33,10 +34,11 @@ public class Function {
     public Polynomial taylorSeries(int degree)
     {
         ArrayList<Double> coefficients = new ArrayList<>();
+        System.out.println(degree);
         Function f = this;
         for (int i = 0; i < degree; i++)
         {
-            coefficients.add(f.getAt(0)/Polynomial.Factorial(i));
+            coefficients.add(f.getAt(0)/Polynomial.EfficientFactorial(i));
             f.removeVariable(variableName);
             f = f.derivative(variableName);
         }
@@ -132,7 +134,7 @@ public class Function {
         double total = 0;
         for (int i =0; i < n+1; i++)
         {
-            total += Math.pow(-1, n + i) * (Polynomial.Factorial(n) / (Polynomial.Factorial(i) * Polynomial.Factorial(n-i))) * this.getAt(position + i * Function.deltaX);
+            total += Math.pow(-1, n + i) * (Polynomial.EfficientFactorial(n) / (Polynomial.EfficientFactorial(i) * Polynomial.EfficientFactorial(n-i))) * this.getAt(position + i * Function.deltaX);
         }
         return (1 / Math.pow(deltaX, n)) *total;
     }
@@ -259,7 +261,7 @@ public class Function {
     }
 
     public static void main(String[] args) {
-        Function function = new Function("x+sin(3)").setVariableName("x");
-        System.out.println(function.derivative(1));
+        Function function = new Function("e^x").setVariableName("x");
+        System.out.println(function.taylorSeries(300));
     }
 }

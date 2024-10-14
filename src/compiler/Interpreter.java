@@ -306,11 +306,13 @@ public class Interpreter
     public Node simplifyUnaryOpNode(UnaryOpNode node)
     {
         Node expr = this.simplifyNode(node.exprNode);
+        /*
         if (expr.getClass() == NumberNode.class)
         {
             this.simplified = true;
             return new NumberNode(new Token(TokenTypes.NUMBER, this.calculateUnaryOpNode(node)));
         };
+        */
         if (expr.getClass() == UnaryOpNode.class)
         {
             UnaryOpNode exprU = (UnaryOpNode) expr;
@@ -561,6 +563,14 @@ public class Interpreter
             {
                 return new BinOpNode(this.derivativeNode(innerNode), new Token(TokenTypes.DIVIDE), new BinOpNode(new UnaryOpNode(new Token(TokenTypes.COSH), innerNode), new Token(TokenTypes.POW), new NumberNode(new Token(TokenTypes.NUMBER, 2))));
             }
+            case TokenTypes.LOG ->
+            {
+                return new BinOpNode(this.derivativeNode(innerNode), new Token(TokenTypes.DIVIDE), new BinOpNode(new UnaryOpNode(new Token(TokenTypes.LN), new NumberNode(new Token(TokenTypes.NUMBER, 10))), new Token(TokenTypes.MULTIPLY), innerNode));
+            }
+            case TokenTypes.LN ->
+            {
+                return new BinOpNode(this.derivativeNode(innerNode), new Token(TokenTypes.DIVIDE), innerNode);
+            }
             //case TokenTypes.ASIN -> Math.asin(this.calculateNode(innerNode));
             //case TokenTypes.ACOS -> Math.acos(this.calculateNode(innerNode));
             //case TokenTypes.ATAN -> Math.atan(this.calculateNode(innerNode));
@@ -726,6 +736,8 @@ public class Interpreter
             case TokenTypes.ATANH -> Interpreter.atanh(this.calculateNode(innerNode));
             case TokenTypes.PLUS -> this.calculateNode(innerNode);
             case TokenTypes.MINUS -> -1 * this.calculateNode(innerNode);
+            case TokenTypes.LN -> Math.log(this.calculateNode(innerNode));
+            case TokenTypes.LOG -> Math.log10(this.calculateNode(innerNode));
             default -> 0;
         };
     }
@@ -795,10 +807,10 @@ public class Interpreter
 
     public static void main(String[] args) {
         double startTime = System.nanoTime();
-        Lexer l = new Lexer("sin(x^2)");
+        Lexer l = new Lexer("LOG(sin(x))");
         Parser p = new Parser(l.createTokens());
         Interpreter i = new Interpreter(p.parse());
-        Interpreter i2 =  new Interpreter(new Interpreter(i.derivative()).derivative());
+        Interpreter i2 =  new Interpreter(i.derivative());
         System.out.println(i2);
         i2.setVariable("x", 3);
         System.out.println(i2.calculateValue());

@@ -62,4 +62,10 @@ public class Arc
         }
         else {return null;}
     }
+
+    @Override
+    public String toString() {
+        if (this.directed){return this.start + "->" + this.end;}
+        return this.start + "<->" + this.end;
+    }
 }

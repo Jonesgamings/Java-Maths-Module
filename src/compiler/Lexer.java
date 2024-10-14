@@ -72,6 +72,7 @@ public class Lexer
             case "acosh" -> new Token(TokenTypes.ACOSH);
             case "atanh" -> new Token(TokenTypes.ATANH);
             case "log" -> new Token(TokenTypes.LOG);
+            case "ln" -> new Token(TokenTypes.LN);
             default -> new Token(TokenTypes.VARIABLE, functionString.toString());
         };
     }

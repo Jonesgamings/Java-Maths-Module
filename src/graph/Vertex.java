@@ -17,6 +17,11 @@ public class Vertex
         this.arcs = new ArrayList<Arc>();
     }
 
+    public int vertexDegree()
+    {
+        return this.arcs.size();
+    }
+
     public void addArc(Arc arc)
     {
         this.arcs.add(arc);
@@ -29,5 +34,10 @@ public class Vertex
         Vertex objVertex = (Vertex) obj;
         if (!objVertex.graph.equals(this.graph)) {return false;}
         return (this.ID == objVertex.ID);
+    }
+
+    @Override
+    public String toString() {
+        return Integer.toString(this.ID);
     }
 }

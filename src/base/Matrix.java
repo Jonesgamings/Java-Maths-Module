@@ -146,7 +146,6 @@ public class Matrix {
         Matrix zeroesMatrix = new Matrix(size, size);
         for (int row = 0; row < zeroesMatrix.rows; row++) {
             for (int column = 0; column < zeroesMatrix.columns; column++) {
-                if (row != column) {continue;}
                 zeroesMatrix.setAt(row, column, 0f);
             }
         }
@@ -440,6 +439,6 @@ public class Matrix {
     public static void main(String[] args){
         Matrix m = new Matrix(2, 3).setMatrix(new double[][] {{1, -4, 7}, {-2, 3, 3}});
         Matrix m2 = new Matrix(4, 4).setMatrix(new double[][] {{8, -9, -6, 5}, {1, -3, -4, 7}, {2, 8, -8, -3}, {1, 2, -5, -1}});
-        System.out.println(m.tensorProduct(m2));
+        System.out.println(m);
     }
 }

@@ -2,8 +2,10 @@ package base;
 
 import java.util.Objects;
 
-public class ComplexNumber
-{
+/**
+ * Custom Complex Number class containing all math operations
+ */
+public class ComplexNumber {
     double real;
     double imaginary;
     final static ComplexNumber NaN = new ComplexNumber(Double.NaN, Double.NaN);
@@ -91,7 +93,7 @@ public class ComplexNumber
 
     public ComplexNumber inverse()
     {
-        return this.conjugate().divide(Math.pow(this.real, 2) + Math.pow(this.imaginary, 2));
+        return this.conjugate().divide(this.magnitudeSquared());
     }
     public ComplexNumber divide(ComplexNumber number)
     {
@@ -123,6 +125,27 @@ public class ComplexNumber
         return Math.atan2(this.imaginary, this.real);
     }
 
+    public double argument()
+    {
+        double angle = angle();
+        if (this.real > 0 && this.imaginary > 0)
+        {
+            return angle;
+        }
+        else if (this.real < 0 && this.imaginary > 0)
+        {
+            return Math.PI - angle;
+        }
+        else if (this.real < 0 && this.imaginary < 0)
+        {
+            return Math.PI + angle;
+        }
+        else
+        {
+            return 2 * Math.PI - angle;
+        }
+    }
+
     public double magnitude()
     {
         return Math.sqrt(Math.pow(this.real, 2) + Math.pow(this.imaginary, 2));
@@ -146,7 +169,7 @@ public class ComplexNumber
 
     public ComplexNumber ln()
     {
-        return new ComplexNumber(Math.sqrt(real*real + imaginary*imaginary), Math.atan(imaginary/real));
+        return new ComplexNumber(Math.log(Math.sqrt(real*real + imaginary*imaginary)), this.argument());
     }
 
     public ComplexNumber log(double base)
@@ -195,8 +218,8 @@ public class ComplexNumber
     }
 
     public static void main(String[] args) {
-        ComplexNumber c1 = new ComplexNumber(5 , -8);
+        ComplexNumber c1 = new ComplexNumber(-3 , 0);
         ComplexNumber c2 = new ComplexNumber(3, -4);
-        System.out.println(c1.divide(c2));
+        System.out.println(c1.ln());
     }
 }

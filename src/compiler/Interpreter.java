@@ -571,12 +571,12 @@ public class Interpreter
             {
                 return new BinOpNode(this.derivativeNode(innerNode), new Token(TokenTypes.DIVIDE), innerNode);
             }
-            //case TokenTypes.ASIN -> Math.asin(this.calculateNode(innerNode));
-            //case TokenTypes.ACOS -> Math.acos(this.calculateNode(innerNode));
-            //case TokenTypes.ATAN -> Math.atan(this.calculateNode(innerNode));
-            //case TokenTypes.ASINH -> Interpreter.asinh(this.calculateNode(innerNode));
-            //case TokenTypes.ACOSH -> Interpreter.acosh(this.calculateNode(innerNode));
-            //case TokenTypes.ATANH -> Interpreter.atanh(this.calculateNode(innerNode));
+            case TokenTypes.ASIN -> Math.asin(this.calculateNode(innerNode));
+            case TokenTypes.ACOS -> Math.acos(this.calculateNode(innerNode));
+            case TokenTypes.ATAN -> Math.atan(this.calculateNode(innerNode));
+            case TokenTypes.ASINH -> Interpreter.asinh(this.calculateNode(innerNode));
+            case TokenTypes.ACOSH -> Interpreter.acosh(this.calculateNode(innerNode));
+            case TokenTypes.ATANH -> Interpreter.atanh(this.calculateNode(innerNode));
             case TokenTypes.PLUS -> {
                 return this.derivativeNode(innerNode);
             }

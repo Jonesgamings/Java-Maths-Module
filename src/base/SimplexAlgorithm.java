@@ -102,5 +102,6 @@ public class SimplexAlgorithm
         System.out.println(sa.maximiseIteration());
         System.out.println(sa.maximiseIteration());
         System.out.println(sa.maximiseIteration());
+        System.out.println(sa.maximise(10));
     }
 }

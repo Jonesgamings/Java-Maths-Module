@@ -68,6 +68,29 @@ public class Graph
 
     public boolean isEulerian()
     {
+        boolean Eulerian = true;
+        for (int i = 0; i < this.numberVertices; i++) {
+            if (this.vertices.get(i).vertexDegree() % 2 != 0)
+            {
+                Eulerian = false;
+            }
+        }
+        return Eulerian;
+    }
+
+    public boolean isSemiEulerian()
+    {
+        int oddVertices = 0;
+        for (int i = 0; i < this.numberVertices; i++) {
+            if (this.vertices.get(i).vertexDegree() % 2 != 0)
+            {
+                oddVertices += 1;
+            }
+        }
+        if (oddVertices == 2)
+        {
+            return true;
+        }
         return false;
     }
 

@@ -4,7 +4,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
-public class ComplexMatrix{
+public class ComplexMatrix
+{
     int rows;
     int columns;
     private ComplexNumber[][] matrix;
@@ -15,6 +16,13 @@ public class ComplexMatrix{
         this.columns = columns;
         this.matrix = new ComplexNumber[rows][columns];
         this.setZero();
+    }
+
+    public ComplexMatrix(ComplexNumber[][] inner)
+    {
+        this.matrix = inner;
+        this.rows = inner.length;
+        this.columns = inner[0].length;
     }
 
     @Override
@@ -30,6 +38,45 @@ public class ComplexMatrix{
         int result = Objects.hash(rows, columns);
         result = 31 * result + Arrays.deepHashCode(matrix);
         return result;
+    }
+
+    public ComplexMatrix hadamardProduct(Matrix m)
+    {
+        if (m.rows != rows || m.columns != columns) {return null;}
+        ComplexMatrix newMatrix = new ComplexMatrix(m.rows, m.columns);
+        for (int i = 0; i < m.rows; i++)
+        {
+            for (int j = 0; j < m.columns; j++)
+            {
+                newMatrix.setAt(i, j, this.getAt(i, j).multiply(m.getAt(i, j)));
+            }
+        }
+        return newMatrix;
+    }
+
+    public ComplexMatrix tensorProduct(Matrix m)
+    {
+        ComplexMatrix newMatrix = new ComplexMatrix(m.rows * this.rows, this.columns * m.columns);
+        for (int i = 0; i < newMatrix.rows; i++)
+        {
+            for (int j = 0; j < newMatrix.columns; j++)
+            {
+                ComplexNumber newValue = this.getAt(i / m.rows, j / m.columns).multiply(m.getAt(i % m.rows,j % m.columns));
+                newMatrix.setAt(i, j, newValue);
+            }
+        }
+        return newMatrix;
+    }
+
+    public static ComplexMatrix zeroesMatrix(int size)
+    {
+        ComplexMatrix zeroesMatrix = new ComplexMatrix(size, size);
+        for (int row = 0; row < zeroesMatrix.rows; row++) {
+            for (int column = 0; column < zeroesMatrix.columns; column++) {
+                zeroesMatrix.setAt(row, column, 0f);
+            }
+        }
+        return zeroesMatrix;
     }
 
     public ComplexNumber[][] getMatrix() {
@@ -195,6 +242,22 @@ public class ComplexMatrix{
         }
         return newComplexMatrix;
     }
+    public ComplexMatrix adjugate()
+    {
+        ComplexMatrix adjugate = new ComplexMatrix(rows, columns);
+        if (adjugate.columns == 2) {
+            return new ComplexMatrix(2, 2).setMatrix(new ComplexNumber[][] {{matrix[1][1], matrix[0][1].multiply(-1)}, {matrix[1][0].multiply(-1), matrix[0][0]}}).divide(this.determinate());
+        }
+        for (int row = 0; row < rows; row++)
+        {
+            for (int column = 0; column < columns; column++)
+            {
+                ComplexNumber subDeterminate = ComplexMatrix.subMatrix(this, row, column).determinate();
+                adjugate.setAt(row, column, subDeterminate.multiply(Math.pow(-1, (row + column)%2)));
+            }
+        }
+        return adjugate.transpose();
+    }
     public ComplexNumber determinate()
     {
         if (columns != rows){ return ComplexNumber.NaN;}
@@ -311,7 +374,7 @@ public class ComplexMatrix{
         return  matrixString.toString();
     }
     public static void main(String[] args){
-        ComplexMatrix m = ComplexMatrix.identity(5);
+        ComplexMatrix m = new ComplexMatrix(5, 5).random_values(-10, 10);
         System.out.println(m);
         System.out.println(m.determinate());
     }

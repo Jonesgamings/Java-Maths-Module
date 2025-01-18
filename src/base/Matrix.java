@@ -4,7 +4,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Random;
 
-public class Matrix {
+public class Matrix
+{
     int rows;
     int columns;
     private double[][] matrix;
@@ -34,7 +35,7 @@ public class Matrix {
     public void setColumn(int index, double[] column)
     {
         Matrix transpose = this.transpose();
-        transpose.setColumn(index, column);
+        transpose.setRow(index, column);
         this.matrix = transpose.matrix;
     }
 
@@ -284,6 +285,23 @@ public class Matrix {
         return new Matrix(2, 2).setMatrix(new double[][] {{Math.cos(angle), -Math.sin(angle)}, {Math.sin(angle), Math.cos(angle)}});
     }
 
+    public Matrix adjugate()
+    {
+        Matrix adjugate = new Matrix(rows, columns);
+        if (adjugate.columns == 2) {
+            return new Matrix(2, 2).setMatrix(new double[][] {{matrix[1][1], -matrix[0][1]}, {-matrix[1][0], matrix[0][0]}}).divide(this.determinate());
+        }
+        for (int row = 0; row < rows; row++)
+        {
+            for (int column = 0; column < columns; column++)
+            {
+                double subDeterminate = Matrix.submatrix(this, row, column).determinate();
+                adjugate.setAt(row, column, subDeterminate * Math.pow(-1, (row + column)%2));
+            }
+        }
+        return adjugate.transpose();
+    }
+
     public double determinate()
     {
         if (columns != rows){ return Double.NaN;}
@@ -368,15 +386,20 @@ public class Matrix {
         if (columns != rows) {return null;}
         if (columns == 2)
         {
-            return new Polynomial(new double[] {1, this.trace(), this.determinate()}).roots();
+            return new Polynomial(new double[] {1, -this.trace(), this.determinate()}).roots();
         }
-        else if (columns == 3)
-        {
+        return null;
+    }
 
-        }
-        else if (columns ==4)
-        {
-
+    public Vector2D[] eigenVectors()
+    {
+        if (columns != rows) {return null;}
+        if (columns == 2) {
+            ComplexNumber[] eigenvalues = this.eigenValues();
+            ComplexNumber matrixX1 = new ComplexNumber(this.getAt(0, 0), 0).subtract(eigenvalues[0]);
+            ComplexNumber matrixY = new ComplexNumber(this.getAt(0, 1), 0);
+            ComplexNumber matrixX2 = new ComplexNumber(this.getAt(0, 0), 0).subtract(eigenvalues[1]);
+            return new Vector2D[] { new Vector2D(1, -matrixX1.divide(matrixY).real), new Vector2D(1, -matrixX2.divide(matrixY).real)};
         }
         return null;
     }
@@ -436,9 +459,177 @@ public class Matrix {
         return newComplexMatrix;
     }
 
+    public Matrix copy()
+    {
+        Matrix m = new Matrix(this.rows, this.columns);
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.columns; j++) {
+                m.setAt(i, j, this.getAt(i, j));
+            }
+        }
+        return m;
+    }
+
+    private Matrix multiplyRow(int index, double val)
+    {
+        Matrix m = this.copy();
+        double[] currentRow = this.getRow(index);
+        double[] newRow = new double[currentRow.length];
+        for (int i = 0; i < currentRow.length; i++) {
+            newRow[i] = currentRow[i] * val;
+        }
+        m.setRow(index, newRow);
+        return m;
+    }
+
+    private Matrix addRows(int index1, int index2, double scalar)
+    {
+        Matrix m = this.copy();
+        double[] addTo = this.getRow(index1);
+        double[] toAdd = this.getRow(index2);
+        for (int i = 0; i < addTo.length; i++) {
+            addTo[i] += toAdd[i] * scalar;
+        }
+        m.setRow(index1, addTo);
+        return m;
+    }
+
+    public Matrix gaussianElimination()
+    {
+        Matrix m = this.copy();
+        for (int i = 0; i < m.rows; i++) {
+            for (int j = i+1; j < m.rows; j++) {
+                m = m.addRows(j, i, -m.getAt(j, i)/m.getAt(i, i));
+            }
+        }
+        return m;
+    }
+
+    public int rank() {
+        Matrix reduced = this.gaussianElimination();
+        int rank = 0;
+
+        for (int i = 0; i < reduced.rows; i++) {
+            for (int j = 0; j < reduced.columns; j++) {
+                if (Math.abs(reduced.getAt(i, j)) > 1e-10) { // Tolerance for numerical errors
+                    rank++;
+                    break;
+                }
+            }
+        }
+        return rank;
+    }
+
+    public Matrix eliminate()
+    {
+        Matrix m = this.copy();
+        for (int i = 0; i < m.rows; i++) {
+            m = m.multiplyRow(i, 1/m.getAt(i, i));
+            for (int j = 0; j < m.rows; j++) {
+                if (j != i) {
+                    m = m.addRows(j, i, -m.getAt(j, i));
+                }
+            }
+        }
+        return m;
+    }
+
+    public static VectorND simultaneousEquation(Matrix right, VectorND equals)
+    {
+        if (right.rows != equals.dimensions)
+        {
+            return null;
+        }
+        if (right.determinate() != 0)
+        {
+            return right.inverse().multiply(equals.toMatrix()).toVector();
+        }
+        else
+        {
+            Matrix rightEliminated = right.gaussianElimination();
+            VectorND answer = new VectorND(equals.dimensions);
+            for (int i = answer.dimensions-1; i > -1; i++) {
+                double sum = 0;
+                for (int j = answer.dimensions; j > i; j++) {
+                    sum -= rightEliminated.getAt(i, j) * answer.getValue(j);
+                }
+                answer.setValue(i, (equals.getValue(i) - sum)/rightEliminated.getAt(i, i));
+                System.out.println(answer);
+            }
+            return answer;
+        }
+    }
+
+    static double[] combineArrays(double[] first, double[] second)
+    {
+        double[] newDouble = new double[first.length + second.length];
+        for (int i = 0; i < first.length; i++) {
+            newDouble[i] = first[i];
+        }
+        for (int j = 0; j < second.length; j++) {
+            newDouble[j + first.length] = second[j];
+        }
+        return newDouble;
+    }
+
+    public Matrix combine(Matrix other)
+    {
+        Matrix newMatrix = new Matrix(this.rows, this.columns + other.columns);
+        for (int i = 0; i < this.rows; i++) {
+            double[] newRow = Matrix.combineArrays(this.getRow(i), other.getRow(i));
+            newMatrix.setRow(i, newRow);
+        }
+        return newMatrix;
+    }
+
+    public Matrix splitAfter(int index)
+    {
+        Matrix newMatrix = new Matrix(this.rows, this.columns - (index+1));
+        for (int i = 0; i < newMatrix.rows; i++) {
+            for (int j = 0; j < newMatrix.columns; j++) {
+                newMatrix.setAt(i, j, this.getAt(i, j + index + 1));
+            }
+        }
+        return newMatrix;
+    }
+
+    public Matrix splitBefore(int index)
+    {
+        Matrix newMatrix = new Matrix(this.rows, index);
+        for (int i = 0; i < newMatrix.rows; i++) {
+            for (int j = 0; j < newMatrix.columns; j++) {
+                newMatrix.setAt(i, j, this.getAt(i, j));
+            }
+        }
+        return newMatrix;
+    }
+
+    public double determinateREF()
+    {
+        double total = 1;
+        for (int i = 0; i < Math.min(this.rows, this.columns); i++) {
+            total *= this.getAt(i, i);
+        }
+        return total;
+    }
+
+    public static Matrix reshape(double[] array, int rows)
+    {
+        if (array.length % rows != 0) {return null;}
+        int columns = array.length / rows;
+        Matrix matrix = new Matrix(rows, columns);
+        int j = 0;
+        for (int i = 0; i < array.length; i++) {
+            matrix.setAt(j, i % rows, array[i]);
+            if (i % rows == rows-1) {j++;}
+        }
+        return matrix;
+    }
+
     public static void main(String[] args){
-        Matrix m = new Matrix(2, 3).setMatrix(new double[][] {{1, -4, 7}, {-2, 3, 3}});
-        Matrix m2 = new Matrix(4, 4).setMatrix(new double[][] {{8, -9, -6, 5}, {1, -3, -4, 7}, {2, 8, -8, -3}, {1, 2, -5, -1}});
-        System.out.println(m);
+        Matrix m = new Matrix(3, 3).setMatrix(new double[][] {{2, 1, -1}, {-3, -1, 2}, {-2, 1, 2}});
+        System.out.println(m.gaussianElimination());
+        System.out.println(m.gaussianElimination().determinateREF());
+        System.out.println(m.determinate());
     }
 }

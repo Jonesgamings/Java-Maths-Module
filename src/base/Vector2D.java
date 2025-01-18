@@ -11,7 +11,7 @@ public class Vector2D {
 
     @Override
     public String toString() {
-        return "{" + x + " , " + y + "}";
+        return "(" + x + " , " + y + ")";
     }
 
     @Override
@@ -66,7 +66,7 @@ public class Vector2D {
     }
 
     public double angle(Vector2D vector) {
-        return Math.atan2(this.y - vector.y, this.x - vector.x);
+        return Math.acos(this.dot(vector) / (this.magnitude() * vector.magnitude()));
     }
 
     public Vector2D add(Vector2D vector) {
@@ -135,6 +135,13 @@ public class Vector2D {
     public Polar2D toPolar()
     {
         return new Polar2D(this.angle(), this.magnitude());
+    }
+
+    public double distance(Vector2D point)
+    {
+        double x = Math.pow(this.x - point.x, 2);
+        double y = Math.pow(this.y - point.y, 2);
+        return Math.sqrt(x + y);
     }
 
     public ComplexNumber toComplex()

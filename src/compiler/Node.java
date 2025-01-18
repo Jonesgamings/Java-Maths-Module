@@ -1,4 +1,5 @@
 package compiler;
 
-public interface Node {
+public interface Node
+{
 }

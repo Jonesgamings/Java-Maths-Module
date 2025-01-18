@@ -262,6 +262,8 @@ public class Function {
 
     public static void main(String[] args) {
         Function function = new Function("e^x").setVariableName("x");
-        System.out.println(function.taylorSeries(300));
+        Matrix m = new Matrix(3,3).random_values(-10, 10);
+        System.out.println(m);
+        System.out.println(function.taylorSeries(100).getAt(m));
     }
 }
